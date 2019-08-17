@@ -18,6 +18,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package localdb
 
 import (
@@ -30,6 +31,7 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
+// Search returns records for the specified query using optional filters
 func (l *LocalDB) Search(query string, filters ...ds.Filter) ([]*api.Record, error) {
 	var records []*api.Record
 	if err := l.db.View(func(tx *bolt.Tx) error {

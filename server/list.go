@@ -18,6 +18,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package server
 
 import (
@@ -26,6 +27,7 @@ import (
 	api "github.com/ehazlett/atlas/api/services/nameserver/v1"
 )
 
+// List returns all records in the Atlas datastore
 func (s *Server) List(ctx context.Context, req *api.ListRequest) (*api.ListResponse, error) {
 	// TODO: enable filters
 	records, err := s.ds.Search("*")

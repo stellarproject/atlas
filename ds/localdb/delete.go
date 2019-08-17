@@ -18,12 +18,14 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package localdb
 
 import (
 	bolt "go.etcd.io/bbolt"
 )
 
+// Delete removes a record from the datastore
 func (l *LocalDB) Delete(key string) error {
 	return l.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucketID))

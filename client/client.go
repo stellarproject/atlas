@@ -18,6 +18,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package client
 
 import (
@@ -34,11 +35,13 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
+// Client is the Atlas client
 type Client struct {
 	conn              *grpc.ClientConn
 	nameserverService api.NameserverClient
 }
 
+// NewClient returns a new Atlas client configured with the specified address and options
 func NewClient(addr string, opts ...grpc.DialOption) (*Client, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()

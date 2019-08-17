@@ -18,8 +18,10 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package types
 
+// NameserverOption is an interface for custom record options
 type NameserverOption interface {
 	String() string
 }

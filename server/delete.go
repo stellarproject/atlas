@@ -18,6 +18,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package server
 
 import (
@@ -27,6 +28,7 @@ import (
 	ptypes "github.com/gogo/protobuf/types"
 )
 
+// Delete removes records from Atlas
 func (s *Server) Delete(ctx context.Context, req *api.DeleteRequest) (*ptypes.Empty, error) {
 	if err := s.ds.Delete(req.Name); err != nil {
 		return empty, err

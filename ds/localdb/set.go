@@ -18,6 +18,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package localdb
 
 import (
@@ -27,6 +28,7 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
+// Set creates the specified record
 func (l *LocalDB) Set(key string, r []*api.Record) error {
 	data, err := json.Marshal(r)
 	if err != nil {

@@ -18,6 +18,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package client
 
 import (
@@ -28,6 +29,7 @@ import (
 	api "github.com/ehazlett/atlas/api/services/nameserver/v1"
 )
 
+// Create is used to create new records
 func (c *Client) Create(name string, records []*api.Record) error {
 	ctx := context.Background()
 	if _, err := c.nameserverService.Create(ctx, &api.CreateRequest{
@@ -39,6 +41,7 @@ func (c *Client) Create(name string, records []*api.Record) error {
 	return nil
 }
 
+// Lookup performs a lookup for the specified record
 func (c *Client) Lookup(query string) ([]*api.Record, error) {
 	ctx := context.Background()
 	resp, err := c.nameserverService.Lookup(ctx, &api.LookupRequest{
@@ -50,6 +53,7 @@ func (c *Client) Lookup(query string) ([]*api.Record, error) {
 	return resp.Records, nil
 }
 
+// List returns all records in the datastore
 func (c *Client) List() ([]*api.Record, error) {
 	ctx := context.Background()
 	resp, err := c.nameserverService.List(ctx, &api.ListRequest{})
@@ -59,6 +63,7 @@ func (c *Client) List() ([]*api.Record, error) {
 	return resp.Records, nil
 }
 
+// Delete removes records from the datastore
 func (c *Client) Delete(name string) error {
 	ctx := context.Background()
 	if _, err := c.nameserverService.Delete(ctx, &api.DeleteRequest{
@@ -69,6 +74,7 @@ func (c *Client) Delete(name string) error {
 	return nil
 }
 
+// RecordType is a helper function to resolve the record type from a human friendly string
 func (c *Client) RecordType(rtype string) (api.RecordType, error) {
 	switch strings.ToUpper(rtype) {
 	case "A":

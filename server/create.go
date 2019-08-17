@@ -18,6 +18,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package server
 
 import (
@@ -27,6 +28,7 @@ import (
 	ptypes "github.com/gogo/protobuf/types"
 )
 
+// Create creates records in the Atlas datastore
 func (s *Server) Create(ctx context.Context, req *api.CreateRequest) (*ptypes.Empty, error) {
 	if err := s.ds.Set(req.Name, req.Records); err != nil {
 		return empty, err

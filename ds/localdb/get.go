@@ -18,6 +18,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package localdb
 
 import (
@@ -27,13 +28,14 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
+// Get returns records for the specified key
 func (l *LocalDB) Get(key string) ([]*api.Record, error) {
 	var records []*api.Record
 	err := l.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucketID))
 		v := b.Get([]byte(key))
 
-		return json.Unmarshal(v, records)
+		return json.Unmarshal(v, &records)
 	})
 
 	return records, err

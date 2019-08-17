@@ -18,6 +18,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package server
 
 import (
@@ -39,12 +40,14 @@ var (
 	empty = &ptypes.Empty{}
 )
 
+// Server is an Atlas server
 type Server struct {
 	cfg   *atlas.Config
 	ds    ds.Datastore
 	cache *ttlcache.TTLCache
 }
 
+// NewServer returns a new server
 func NewServer(cfg *atlas.Config) (*Server, error) {
 	ds, err := atlas.GetDatastore(cfg.Datastore)
 	if err != nil {
@@ -65,20 +68,24 @@ func NewServer(cfg *atlas.Config) (*Server, error) {
 	return srv, nil
 }
 
+// Register enables callers to register this service with an existing GRPC server
 func (s *Server) Register(server *grpc.Server) error {
 	logrus.Debug("registering nameserver with grpc")
 	api.RegisterNameserverServer(server, s)
 	return nil
 }
 
+// Start starts the embedded DNS server
 func (s *Server) Start() error {
 	return s.startDNSServer()
 }
 
+// Stop is used to stop and release resources
 func (s *Server) Stop() error {
 	return nil
 }
 
+// GenerateProfile generates a new Go profile
 func (s *Server) GenerateProfile() (string, error) {
 	tmpfile, err := ioutil.TempFile("", "atlas-profile-")
 	if err != nil {

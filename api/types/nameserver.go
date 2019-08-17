@@ -18,6 +18,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package types
 
 import (
@@ -27,13 +28,14 @@ import (
 )
 
 const (
-	nsOptionUrl = "evanhazlett.com/atlas/services/nameserver/types"
+	nsOptionURL = "evanhazlett.com/atlas/services/nameserver/types"
 )
 
 func init() {
-	typeurl.Register(&SRVOptions{}, nsOptionUrl+".SRVOptions")
+	typeurl.Register(&SRVOptions{}, nsOptionURL+".SRVOptions")
 }
 
+// SRVOptions are options for SRV record types
 type SRVOptions struct {
 	Service  string
 	Protocol string
@@ -42,6 +44,7 @@ type SRVOptions struct {
 	Port     uint16
 }
 
+// String returns the human friendly descriptionn of SRVOptions
 func (o *SRVOptions) String() string {
 	return fmt.Sprintf("service=%s proto=%s priority=%d weight=%d port=%d",
 		o.Service,

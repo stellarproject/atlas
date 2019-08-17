@@ -18,6 +18,7 @@
    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 package localdb
 
 import (
@@ -33,10 +34,12 @@ const (
 	bucketID = ds.ServiceID + ".v1"
 )
 
+// LocalDB is a BoltDB backed datastore
 type LocalDB struct {
 	db *bolt.DB
 }
 
+// New returns a new datastore
 func New(dbPath string) (*LocalDB, error) {
 	baseDir := filepath.Dir(dbPath)
 	if err := os.MkdirAll(baseDir, 0755); err != nil {
@@ -59,10 +62,12 @@ func New(dbPath string) (*LocalDB, error) {
 	}, nil
 }
 
+// ID returns the id of the service
 func (l *LocalDB) ID() string {
 	return "localdb"
 }
 
+// Close is used to close and release all resources
 func (l *LocalDB) Close() error {
 	if l.db != nil {
 		l.db.Close()
