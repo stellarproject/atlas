@@ -12,6 +12,7 @@ import (
 
 	api "github.com/ehazlett/atlas/api/services/nameserver/v1"
 	"github.com/ehazlett/atlas/ds"
+	"github.com/ehazlett/ttlcache"
 )
 
 var (
@@ -19,8 +20,9 @@ var (
 )
 
 type Server struct {
-	cfg *atlas.Config
-	ds  ds.Datastore
+	cfg   *atlas.Config
+	ds    ds.Datastore
+	cache *ttlcache.TTLCache
 }
 
 func NewServer(cfg *atlas.Config) (*Server, error) {
@@ -31,6 +33,13 @@ func NewServer(cfg *atlas.Config) (*Server, error) {
 	srv := &Server{
 		cfg: cfg,
 		ds:  ds,
+	}
+	if cfg.CacheTTL != 0 {
+		c, err := ttlcache.NewTTLCache(cfg.CacheTTL)
+		if err != nil {
+			return nil, err
+		}
+		srv.cache = c
 	}
 
 	return srv, nil

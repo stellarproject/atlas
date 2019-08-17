@@ -40,6 +40,10 @@ func main() {
 			Usage: "upstream dns server",
 			Value: "9.9.9.9:53",
 		},
+		cli.DurationFlag{
+			Name:  "cache-ttl",
+			Usage: "builtin cache ttl (default: disabled)",
+		},
 	}
 	app.Before = func(c *cli.Context) error {
 		if c.Bool("debug") {

@@ -68,6 +68,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 		w.WriteMsg(m)
 		return
 	}
+
 	// forward if empty
 	if len(resp.Records) == 0 {
 		logrus.WithFields(logrus.Fields{
@@ -88,8 +89,17 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 	// defer WriteMsg to ensure a response
 	defer w.WriteMsg(m)
 
-	m.Answer = []dns.RR{}
+	// cache
+	c := s.cache.Get(name)
+	if c == nil {
+		if err := s.cacheRecords(name, resp.Records); err != nil {
+			logrus.WithField("name", name).Warn("error caching results")
+		}
+		c = s.cache.Get(name)
+	}
 
+	m.Answer = []dns.RR{}
+	ttl := uint32(c.TTL.Seconds() + 1)
 	for _, record := range resp.Records {
 		var rr dns.RR
 		switch record.Type {
@@ -100,7 +110,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 					Name:   fqdn(name),
 					Rrtype: dns.TypeA,
 					Class:  dns.ClassINET,
-					Ttl:    0,
+					Ttl:    ttl,
 				},
 				A: ip,
 			}
@@ -110,7 +120,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 					Name:   fqdn(name),
 					Rrtype: dns.TypeCNAME,
 					Class:  dns.ClassINET,
-					Ttl:    0,
+					Ttl:    ttl,
 				},
 				Target: string(record.Value),
 			}
@@ -120,7 +130,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 					Name:   fqdn(name),
 					Rrtype: dns.TypeTXT,
 					Class:  dns.ClassINET,
-					Ttl:    0,
+					Ttl:    ttl,
 				},
 				Txt: []string{string(record.Value)},
 			}
@@ -130,7 +140,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 					Name:   fqdn(name),
 					Rrtype: dns.TypeMX,
 					Class:  dns.ClassINET,
-					Ttl:    0,
+					Ttl:    ttl,
 				},
 				Mx: string(record.Value),
 			}
@@ -149,7 +159,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 					Name:   formatSRV(name, o),
 					Rrtype: dns.TypeSRV,
 					Class:  dns.ClassINET,
-					Ttl:    0,
+					Ttl:    ttl,
 				},
 				Target:   query,
 				Priority: o.Priority,

@@ -1,5 +1,7 @@
 # github.com/containerd/typeurl v0.0.0-20190515163108-7312978f2987
 github.com/containerd/typeurl
+# github.com/ehazlett/ttlcache v0.0.0-20190817042610-751e3795a611
+github.com/ehazlett/ttlcache
 # github.com/gogo/googleapis v1.2.0
 github.com/gogo/googleapis/google/api
 # github.com/gogo/protobuf v1.2.1
@@ -54,10 +56,10 @@ google.golang.org/genproto/googleapis/rpc/status
 google.golang.org/grpc
 google.golang.org/grpc/codes
 google.golang.org/grpc/status
+google.golang.org/grpc/credentials
 google.golang.org/grpc/balancer
 google.golang.org/grpc/balancer/roundrobin
 google.golang.org/grpc/connectivity
-google.golang.org/grpc/credentials
 google.golang.org/grpc/encoding
 google.golang.org/grpc/encoding/proto
 google.golang.org/grpc/grpclog
@@ -80,7 +82,7 @@ google.golang.org/grpc/resolver/passthrough
 google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
 google.golang.org/grpc/tap
-google.golang.org/grpc/balancer/base
 google.golang.org/grpc/credentials/internal
+google.golang.org/grpc/balancer/base
 google.golang.org/grpc/binarylog/grpc_binarylog_v1
 google.golang.org/grpc/internal/syscall

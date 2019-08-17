@@ -24,6 +24,7 @@ func runServer(cx *cli.Context) error {
 		Datastore:       cx.String("datastore"),
 		GRPCAddress:     cx.String("address"),
 		UpstreamDNSAddr: cx.String("upstream-dns"),
+		CacheTTL:        cx.Duration("cache-ttl"),
 	}
 
 	srv, err := server.NewServer(cfg)

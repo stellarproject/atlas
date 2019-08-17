@@ -1,5 +1,7 @@
 package atlas
 
+import "time"
+
 // Config is the configuration used for the stellar server
 type Config struct {
 	// BindAddress is the address on which the DNS server will bind
@@ -20,4 +22,6 @@ type Config struct {
 	TLSInsecureSkipVerify bool
 	// UpstreamDNSAddr is the address to use for external queries
 	UpstreamDNSAddr string
+	// CacheTTL is the duration for caching dns lookups
+	CacheTTL time.Duration
 }
