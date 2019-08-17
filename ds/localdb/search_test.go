@@ -77,6 +77,15 @@ func TestMatchKeySubdomainInvalid(t *testing.T) {
 	}
 }
 
+func TestMatchKeySubdomainMulti(t *testing.T) {
+	key := "host.bar.foo.invalid"
+	domain := "*.bar.foo.invalid"
+
+	if !matchKey(key, domain) {
+		t.Fatalf("expected key %s to match %s", key, domain)
+	}
+}
+
 func TestMatchKeyWildcard(t *testing.T) {
 	key := "*"
 	domain := "foo.invalid"

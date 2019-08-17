@@ -30,9 +30,22 @@ import (
 // Lookup performs a lookup request to the datastore
 func (s *Server) Lookup(ctx context.Context, req *api.LookupRequest) (*api.LookupResponse, error) {
 	// TODO: enable filters
-	records, err := s.ds.Search(req.Query)
+	var (
+		records []*api.Record
+		err     error
+	)
+
+	records, err = s.ds.Get(req.Query)
 	if err != nil {
 		return nil, err
+	}
+
+	// if record not found, search
+	if len(records) == 0 {
+		records, err = s.ds.Search(req.Query)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &api.LookupResponse{

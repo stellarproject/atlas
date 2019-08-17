@@ -74,7 +74,6 @@ func matchKey(query, domain string) bool {
 		return true
 	}
 
-	// host.foo.invalid, *.foo.invalid
 	if strings.Index(domain, "*") == 0 {
 		s := getRootDomain(query)
 		d := getRootDomain(domain)

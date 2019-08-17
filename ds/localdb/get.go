@@ -34,7 +34,9 @@ func (l *LocalDB) Get(key string) ([]*api.Record, error) {
 	err := l.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucketID))
 		v := b.Get([]byte(key))
-
+		if v == nil {
+			return nil
+		}
 		return json.Unmarshal(v, &records)
 	})
 

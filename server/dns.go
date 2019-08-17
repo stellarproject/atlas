@@ -27,6 +27,7 @@ import (
 	"net"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/containerd/typeurl"
 	api "github.com/ehazlett/atlas/api/services/nameserver/v1"
@@ -72,6 +73,7 @@ func (s *Server) startDNSServer() error {
 func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 	m := new(dns.Msg)
 	m.SetReply(r)
+	m.Authoritative = true
 	m.RecursionAvailable = true
 
 	query := m.Question[0].Name
@@ -111,6 +113,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 	defer w.WriteMsg(m)
 
 	// cache
+	started := time.Now()
 	c := s.cache.Get(name)
 	if c == nil {
 		if err := s.cacheRecords(name, resp.Records); err != nil {
@@ -120,6 +123,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 	}
 
 	m.Answer = []dns.RR{}
+	m.Extra = []dns.RR{}
 	ttl := uint32(c.TTL.Seconds() + 1)
 	for _, record := range resp.Records {
 		var rr dns.RR
@@ -143,7 +147,33 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 					Class:  dns.ClassINET,
 					Ttl:    ttl,
 				},
-				Target: string(record.Value),
+				Target: fqdn(string(record.Value)),
+			}
+			// recurse to resolve name to A and add
+			resp, err := s.Lookup(context.Background(), &api.LookupRequest{
+				Query: string(record.Value),
+			})
+			if err != nil {
+				logrus.Error(errors.Wrapf(err, "nameserver: error performing recursive lookup for %s", record.Value))
+				w.WriteMsg(m)
+				return
+			}
+
+			logrus.Debugf("looking up A records for cname %s: %+v", record.Value, resp.Records)
+			for _, r := range resp.Records {
+				if r.Type != api.RecordType_A {
+					continue
+				}
+				ip := net.ParseIP(string(r.Value))
+				m.Answer = append(m.Answer, &dns.A{
+					Hdr: dns.RR_Header{
+						Name:   fqdn(string(r.Name)),
+						Rrtype: dns.TypeA,
+						Class:  dns.ClassINET,
+						Ttl:    ttl,
+					},
+					A: ip,
+				})
 			}
 		case api.RecordType_TXT:
 			rr = &dns.TXT{
@@ -163,9 +193,9 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 					Class:  dns.ClassINET,
 					Ttl:    ttl,
 				},
-				Mx: string(record.Value),
+				Mx: fqdn(string(record.Value)),
 			}
-		case api.RecordType_SRV: // srv is unique do to the return format
+		case api.RecordType_SRV: // srv is unique due to the return format
 			v, err := typeurl.UnmarshalAny(record.Options)
 			if err != nil {
 				logrus.Errorf("ns: unmarshalling record options: %s", err)
@@ -191,10 +221,23 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 			logrus.Errorf("nameserver: unsupported record type %s for %s", record.Type, name)
 		}
 
+		lookupDuration := time.Since(started)
+		logrus.Debugf("lookup duration: %s", lookupDuration)
+
+		logrus.Debugf("%+v", rr)
 		// set for answer or extra
-		if rr.Header().Rrtype == queryType {
+		if rr.Header().Rrtype == queryType || rr.Header().Rrtype == dns.TypeCNAME {
 			m.Answer = append(m.Answer, rr)
+		} else {
+			m.Extra = append(m.Extra, rr)
 		}
+
+		//if rr.Header().Rrtype == dns.TypeCNAME {
+		//	for i := len(m.Answer)/2 - 1; i >= 0; i-- {
+		//		opp := len(m.Answer) - 1 - i
+		//		m.Answer[i], m.Answer[opp] = m.Answer[opp], m.Answer[i]
+		//	}
+		//}
 	}
 }
 

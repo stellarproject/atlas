@@ -46,9 +46,10 @@ func main() {
 			Usage: "Enable debug logging",
 		},
 		cli.StringFlag{
-			Name:  "addr, a",
-			Usage: "atlas grpc address",
-			Value: "tcp://127.0.0.1:9000",
+			Name:   "addr, a",
+			Usage:  "atlas grpc address",
+			Value:  "tcp://127.0.0.1:9000",
+			EnvVar: "ATLAS_ADDR",
 		},
 		cli.StringFlag{
 			Name:  "cert, c",
