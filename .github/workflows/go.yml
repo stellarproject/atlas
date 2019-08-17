@@ -1,5 +1,8 @@
 name: Go
-on: [push]
+on:
+  push:
+    branches:
+    - master
 jobs:
 
   build:
@@ -7,16 +10,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Set up Go 1.12
+    - name: Set up Go
       uses: actions/setup-go@v1
       with:
         go-version: 1.12
       id: go
 
-    - name: Check out code into the Go module directory
+    - name: Check out code
       uses: actions/checkout@v1
-      
-      
+
+
+    - name: Test
+      run: go test -v ./...
+
+    - name: Build
+      run: go build -v .
+
+name: PR
+on:
+  pull_request:
+    branches:
+    - master
+jobs:
+
+  build:
+    name:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.12
+      id: go
+
+    - name: Check out code
+      uses: actions/checkout@v1
+
     - name: Test
       run: go test -v ./...
 
