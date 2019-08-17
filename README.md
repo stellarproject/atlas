@@ -45,17 +45,18 @@ NAME:
    actl create - create nameserver record
 
 USAGE:
-   actl create [command options] <NAME> <VALUE>
+   actl create [command options] [arguments...]
 
 OPTIONS:
-   --type value, -t value  resource record type (A, CNAME, TXT, SRV, MX) (default: "A")
+   --name value, -n value    record name
+   --record value, -r value  record to add (format: <TYPE>:<VALUE>)
 ```
 
 To add a new `A` record:
 
 ```bash
-$> actl create -t A foo.local 127.0.0.1
-added foo.local=127.0.0.1 (A)
+$> actl create -n foo.local r A:127.0.0.1
+added 1 record
 ```
 
 This will create a new `A` record for `foo.local` that resolves to `127.0.0.1`.  You

@@ -22,8 +22,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"text/tabwriter"
 
 	"github.com/containerd/typeurl"
@@ -31,6 +33,13 @@ import (
 	"github.com/ehazlett/atlas/api/types"
 	"github.com/urfave/cli"
 )
+
+type recordConfig struct {
+	Type  string
+	Value string
+}
+
+var ErrInvalidRecordFormat = errors.New("invalid record format; expected <TYPE>:<VALUE>")
 
 var listRecordsCommand = cli.Command{
 	Name:  "list",
@@ -73,13 +82,14 @@ var createRecordCommand = cli.Command{
 	Usage: "create nameserver record",
 	Flags: []cli.Flag{
 		cli.StringFlag{
-			Name:  "type, t",
-			Usage: "resource record type (A, CNAME, TXT, SRV, MX)",
-			Value: "A",
+			Name:  "name, n",
+			Usage: "record name",
 		},
-		// TODO: handle resource record options
+		cli.StringSliceFlag{
+			Name:  "record, r",
+			Usage: "record to add (format: <TYPE>:<VALUE>)",
+		},
 	},
-	ArgsUsage: "<NAME> <VALUE>",
 	Action: func(c *cli.Context) error {
 		client, err := getClient(c)
 		if err != nil {
@@ -87,29 +97,39 @@ var createRecordCommand = cli.Command{
 		}
 		defer client.Close()
 
-		t := c.String("type")
-		name := c.Args().First()
-		value := c.Args().Get(1)
-
-		if name == "" || value == "" {
-			return fmt.Errorf("you must enter a name and value")
+		name := c.String("name")
+		if name == "" {
+			return fmt.Errorf("name must be specified")
+		}
+		recs := c.StringSlice("record")
+		if len(recs) == 0 {
+			return fmt.Errorf("at least one record must be specified")
 		}
 
-		rType, err := client.RecordType(t)
-		if err != nil {
+		var records []*api.Record
+
+		for _, rec := range recs {
+			r, err := parseRecord(rec)
+			if r.Value == "" {
+				return fmt.Errorf("you must enter a value")
+			}
+
+			rType, err := client.RecordType(r.Type)
+			if err != nil {
+				return err
+			}
+			records = append(records, &api.Record{
+				Type:  rType,
+				Name:  name,
+				Value: r.Value,
+			})
+		}
+
+		if err := client.Create(name, records); err != nil {
 			return err
 		}
-		record := &api.Record{
-			Type:  rType,
-			Name:  name,
-			Value: value,
-		}
 
-		if err := client.Create(name, []*api.Record{record}); err != nil {
-			return err
-		}
-
-		fmt.Printf("added %s=%s (%s)\n", name, value, t)
+		fmt.Printf("added %d records\n", len(records))
 
 		return nil
 	},
@@ -141,4 +161,19 @@ var deleteRecordCommand = cli.Command{
 
 		return nil
 	},
+}
+
+func parseRecord(i string) (*recordConfig, error) {
+	tPart := strings.Split(i, ":")
+	if len(tPart) != 2 {
+		return nil, ErrInvalidRecordFormat
+	}
+
+	t := tPart[0]
+	v := tPart[1]
+
+	return &recordConfig{
+		Type:  t,
+		Value: v,
+	}, nil
 }
