@@ -10,8 +10,8 @@ const (
 
 // Filter allows for filtering of records
 type Filter interface {
-	// Match is the implementation needed for the match
-	Match(r []*api.Record) bool
+	// Apply is the implementation needed to filter records
+	Apply(r []*api.Record) ([]*api.Record, error)
 }
 
 // Datastore defines the datastore interface
@@ -23,7 +23,7 @@ type Datastore interface {
 	// Set sets the key to the records
 	Set(key string, v []*api.Record) error
 	// Search returns a list of records optionally filtered
-	Search(filters ...Filter) ([]*api.Record, error)
+	Search(key string, filters ...Filter) ([]*api.Record, error)
 	// Delete deletes records by key
 	Delete(key string) error
 	// Close optionally closes any resources in use by the datastore

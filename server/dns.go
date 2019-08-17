@@ -59,7 +59,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 	logrus.Debugf("nameserver: query=%q", query)
 	name := getName(query, queryType)
 
-	logrus.Debugf("nameserver: looking up %s", name)
+	logrus.Infof("nameserver: looking up %s", name)
 	resp, err := s.Lookup(context.Background(), &api.LookupRequest{
 		Query: name,
 	})
