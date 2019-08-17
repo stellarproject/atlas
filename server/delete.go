@@ -8,5 +8,8 @@ import (
 )
 
 func (s *Server) Delete(ctx context.Context, req *api.DeleteRequest) (*ptypes.Empty, error) {
+	if err := s.ds.Delete(req.Name); err != nil {
+		return empty, err
+	}
 	return empty, nil
 }

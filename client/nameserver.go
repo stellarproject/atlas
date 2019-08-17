@@ -39,14 +39,9 @@ func (c *Client) List() ([]*api.Record, error) {
 	return resp.Records, nil
 }
 
-func (c *Client) Delete(rtype, name string) error {
-	t, err := c.RecordType(rtype)
-	if err != nil {
-		return err
-	}
+func (c *Client) Delete(name string) error {
 	ctx := context.Background()
 	if _, err := c.nameserverService.Delete(ctx, &api.DeleteRequest{
-		Type: t,
 		Name: name,
 	}); err != nil {
 		return err

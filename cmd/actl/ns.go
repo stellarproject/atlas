@@ -95,15 +95,9 @@ var createRecordCommand = cli.Command{
 }
 
 var deleteRecordCommand = cli.Command{
-	Name:  "delete",
-	Usage: "delete nameserver record",
-	Flags: []cli.Flag{
-		cli.StringFlag{
-			Name:  "type, t",
-			Usage: "resource record type (A, CNAME, TXT, SRV, MX)",
-			Value: "A",
-		},
-	},
+	Name:      "delete",
+	Usage:     "delete nameserver record",
+	Flags:     []cli.Flag{},
 	ArgsUsage: "<NAME>",
 	Action: func(c *cli.Context) error {
 		client, err := getClient(c)
@@ -112,18 +106,17 @@ var deleteRecordCommand = cli.Command{
 		}
 		defer client.Close()
 
-		t := c.String("type")
 		name := c.Args().First()
 
 		if name == "" {
 			return fmt.Errorf("you must enter a name")
 		}
 
-		if err := client.Delete(t, name); err != nil {
+		if err := client.Delete(name); err != nil {
 			return err
 		}
 
-		fmt.Printf("removed %s (%s)\n", name, t)
+		fmt.Printf("removed %s\n", name)
 
 		return nil
 	},
