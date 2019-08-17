@@ -20,7 +20,7 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Test
-      run: go test -v ./...
+      run: go test -cover -v ./...
 
     - name: Build
       run: go build -v .
