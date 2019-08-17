@@ -1,12 +1,12 @@
-name: Go
+name: PR
 on:
-  push:
+  pull_request:
     branches:
     - master
 jobs:
 
   build:
-    name: Build
+    name:
     runs-on: ubuntu-latest
     steps:
 
@@ -18,7 +18,6 @@ jobs:
 
     - name: Check out code
       uses: actions/checkout@v1
-
 
     - name: Test
       run: go test -v ./...
