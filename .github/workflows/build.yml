@@ -1,4 +1,4 @@
-name: Go
+name: Build
 on:
   push:
     branches:
@@ -19,9 +19,15 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v1
 
-
     - name: Test
       run: go test -cover -v ./...
 
     - name: Build
       run: go build -v .
+
+    - name: Package
+      secrets: ["KEY", "SECRET", "BUCKET"]
+      env:
+        BUILD:
+      needs: [Build]
+      run: ./script/release.sh
