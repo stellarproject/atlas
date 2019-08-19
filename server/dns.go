@@ -92,6 +92,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 		return
 	}
 
+	logrus.Debugf("lookup results: %+v", resp.Records)
 	// forward if empty
 	if len(resp.Records) == 0 {
 		logrus.WithFields(logrus.Fields{

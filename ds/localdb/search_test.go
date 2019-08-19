@@ -42,7 +42,7 @@ func TestGetRootDomainSubdomain(t *testing.T) {
 }
 
 func TestGetRootDomainMultipleSubdomain(t *testing.T) {
-	expected := "foo.invalid"
+	expected := "bar.host.foo.invalid"
 	d := getRootDomain("foo.bar.host.foo.invalid")
 
 	if d != expected {
@@ -51,46 +51,55 @@ func TestGetRootDomainMultipleSubdomain(t *testing.T) {
 }
 
 func TestMatchKeyExact(t *testing.T) {
-	key := "foo.invalid"
+	query := "foo.invalid"
 	domain := "foo.invalid"
 
-	if !matchKey(key, domain) {
-		t.Fatalf("expected key %s to match %s", key, domain)
+	if !matchKey(query, domain) {
+		t.Fatalf("expected query %s to match %s", query, domain)
 	}
 }
 
 func TestMatchKeySubdomain(t *testing.T) {
-	key := "host.foo.invalid"
+	query := "host.foo.invalid"
 	domain := "*.foo.invalid"
 
-	if !matchKey(key, domain) {
-		t.Fatalf("expected key %s to match %s", key, domain)
+	if !matchKey(query, domain) {
+		t.Fatalf("expected query %s to match %s", query, domain)
 	}
 }
 
 func TestMatchKeySubdomainInvalid(t *testing.T) {
-	key := "host.foo.invalid.local"
+	query := "host.foo.invalid.local"
 	domain := "*.foo.invalid"
 
-	if matchKey(key, domain) {
-		t.Fatalf("expected miss %s to match %s", key, domain)
+	if matchKey(query, domain) {
+		t.Fatalf("expected miss %s to match %s", query, domain)
 	}
 }
 
 func TestMatchKeySubdomainMulti(t *testing.T) {
-	key := "host.bar.foo.invalid"
+	query := "host.bar.foo.invalid"
 	domain := "*.bar.foo.invalid"
 
-	if !matchKey(key, domain) {
-		t.Fatalf("expected key %s to match %s", key, domain)
+	if !matchKey(query, domain) {
+		t.Fatalf("expected query %s to match %s", query, domain)
+	}
+}
+
+func TestMatchKeySubdomainMultiRoot(t *testing.T) {
+	query := "host.bar.foo.invalid"
+	domain := "*.inv.foo.invalid"
+
+	if matchKey(query, domain) {
+		t.Fatalf("expected query %s to not match %s", query, domain)
 	}
 }
 
 func TestMatchKeyWildcard(t *testing.T) {
-	key := "*"
+	query := "*"
 	domain := "foo.invalid"
 
-	if !matchKey(key, domain) {
-		t.Fatalf("expected key %s to match %s", key, domain)
+	if !matchKey(query, domain) {
+		t.Fatalf("expected query %s to match %s", query, domain)
 	}
 }

@@ -23,7 +23,6 @@ package localdb
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	api "github.com/ehazlett/atlas/api/services/nameserver/v1"
@@ -87,5 +86,5 @@ func getRootDomain(v string) string {
 	if len(x) < 3 {
 		return v
 	}
-	return fmt.Sprintf("%s.%s", x[len(x)-2], x[len(x)-1])
+	return strings.Join(x[1:], ".")
 }
