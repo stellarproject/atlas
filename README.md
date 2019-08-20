@@ -8,9 +8,9 @@ Atlas uses the same core library that CoreDNS uses ([miekg/dns](https://github.c
 # Installation
 
 ## Docker
-Docker multi-arch images are built from master using Github actions.  You should be able to simply `docker pull ehazlett/atlas:latest` and get what you need.
+A [Docker](https://www.docker.com) image is built upon every merge to master.  The latest is `ehazlett/atlas:latest`.
 
-To run with Docker, you will either need to map ports (-p) for all ports you want to expose (at least 53/udp and 9000/tcp).
+To run with Docker, you will need to map ports (-p) for all ports you want to expose (at least 53/udp and 9000/tcp).
 
 ### Examples
 
