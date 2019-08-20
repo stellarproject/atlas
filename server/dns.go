@@ -225,20 +225,12 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 		lookupDuration := time.Since(started)
 		logrus.Debugf("lookup duration: %s", lookupDuration)
 
-		logrus.Debugf("%+v", rr)
 		// set for answer or extra
 		if rr.Header().Rrtype == queryType || rr.Header().Rrtype == dns.TypeCNAME {
 			m.Answer = append(m.Answer, rr)
 		} else {
 			m.Extra = append(m.Extra, rr)
 		}
-
-		//if rr.Header().Rrtype == dns.TypeCNAME {
-		//	for i := len(m.Answer)/2 - 1; i >= 0; i-- {
-		//		opp := len(m.Answer) - 1 - i
-		//		m.Answer[i], m.Answer[opp] = m.Answer[opp], m.Answer[i]
-		//	}
-		//}
 	}
 }
 

@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	github.com/containerd/typeurl v0.0.0-20190515163108-7312978f2987
-	github.com/ehazlett/ttlcache v0.0.0-20190817045011-97ab1d9e786a
+	github.com/ehazlett/ttlcache v0.0.0-20190820213212-4400e3aef9f0
 	github.com/gogo/googleapis v1.2.0
 	github.com/gogo/protobuf v1.2.1
 	github.com/golang/protobuf v1.3.2 // indirect

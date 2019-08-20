@@ -30,7 +30,7 @@ func NewTTLCache(ttl time.Duration) (*TTLCache, error) {
 		reapCallback: func(key string, val interface{}) {},
 	}
 
-	t := time.NewTicker(ttl)
+	t := time.NewTicker(time.Second * 1)
 	go func() {
 		for range t.C {
 			c.reap()

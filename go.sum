@@ -11,6 +11,8 @@ github.com/ehazlett/ttlcache v0.0.0-20190817044737-476174909158 h1:/CzpoenYwDn9b
 github.com/ehazlett/ttlcache v0.0.0-20190817044737-476174909158/go.mod h1:D7IiYXsX2n2xixWvFTxGeZucCvvNtI14ikLj6L9Kp9E=
 github.com/ehazlett/ttlcache v0.0.0-20190817045011-97ab1d9e786a h1:75FZgoThuPIRMuAvNOZG+/i8m37/8FgFp1ahZ4O0sAo=
 github.com/ehazlett/ttlcache v0.0.0-20190817045011-97ab1d9e786a/go.mod h1:D7IiYXsX2n2xixWvFTxGeZucCvvNtI14ikLj6L9Kp9E=
+github.com/ehazlett/ttlcache v0.0.0-20190820213212-4400e3aef9f0 h1:VsZVfLG6kCNvTnHtuvExouke9QrMSd/Y7VusveLbT90=
+github.com/ehazlett/ttlcache v0.0.0-20190820213212-4400e3aef9f0/go.mod h1:D7IiYXsX2n2xixWvFTxGeZucCvvNtI14ikLj6L9Kp9E=
 github.com/gogo/googleapis v1.2.0 h1:Z0v3OJDotX9ZBpdz2V+AI7F4fITSZhVE5mg6GQppwMM=
 github.com/gogo/googleapis v1.2.0/go.mod h1:Njal3psf3qN6dwBtQfUmBZh2ybovJ0tlu3o/AC7HYjU=
 github.com/gogo/protobuf v1.2.1 h1:/s5zKNz0uPFCZ5hddgPdo2TK2TVrUNMn0OOX8/aZMTE=
@@ -26,6 +28,7 @@ github.com/kisielk/errcheck v1.1.0/go.mod h1:EZBBE59ingxPouuu3KfxchcWSUPOHkagtvW
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1 h1:mweAR1A6xJ3oS2pRaGiHgQ4OO8tzTaLawm8vnODuwDk=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
+github.com/konsorten/go-windows-terminal-sequences v1.0.2 h1:DB17ag19krx9CFsz4o3enTrPXyIXCl+2iCXH/aMAp9s=
 github.com/konsorten/go-windows-terminal-sequences v1.0.2/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/miekg/dns v1.1.15 h1:CSSIDtllwGLMoA6zjdKnaE6Tx6eVUxQ29LUgGetiDCI=
 github.com/miekg/dns v1.1.15/go.mod h1:W1PPwlIAgtquWBMBEV9nkV9Cazfe8ScdGz/Lj7v3Nrg=
