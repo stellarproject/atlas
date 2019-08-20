@@ -15,5 +15,4 @@ for v in $OS; do
     rm -rf ${dir}
 done
 
-s3cmd sync ./build/* s3://${BUCKET}/
-s3cmd setacl --recursive s3://${BUCKET}/ --acl-public
+aws s3 sync --acl public-read ./build/  s3://${BUCKET}/
