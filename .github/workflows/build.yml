@@ -26,8 +26,10 @@ jobs:
       run: go build -v .
 
     - name: Package
-      secrets: ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "BUCKET"]
       env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        BUCKET: ${{ secrets.BUCKET }}
         BUILD:
       needs: [Build]
       run: ./script/release.sh
