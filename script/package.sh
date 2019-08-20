@@ -4,6 +4,10 @@ OS=${OS:-windows freebsd linux}
 
 DIFF=$(git diff --no-ext-diff)
 if [ ! -z "$DIFF" ]; then
+    echo "-------------------------------------"
+    echo "***** WARNING: changes detected *****"
+    echo "-------------------------------------"
+    echo ""
     echo "$DIFF"
 fi
 
