@@ -42,7 +42,7 @@ jobs:
     - name: Build Docker Image
       uses: actions/docker/cli@master
       with:
-        args: build --build-arg BUILD= -t ${{ secrets.DOCKER_USERNAME }}/atlas:latest .
+        args: build --build-arg BUILD= -t ${{ secrets.DOCKER_ORG }}/atlas:latest .
 
     - name: Docker Login
       uses: actions/docker/login@master
@@ -53,7 +53,7 @@ jobs:
     - name: Publish Docker Image
       uses: actions/docker/cli@master
       with:
-        args: push ${{ secrets.DOCKER_USERNAME }}/atlas:latest
+        args: push ${{ secrets.DOCKER_ORG }}/atlas:latest
 
     - name: Cleanup
       run: rm -rf $HOME/.docker/
