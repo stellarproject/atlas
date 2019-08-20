@@ -2,6 +2,11 @@
 APP=${APP:-atlas}
 OS=${OS:-windows freebsd linux}
 
+DIFF=$(git diff --no-ext-diff)
+if [ ! -z "$DIFF" ]; then
+    echo "$DIFF"
+fi
+
 mkdir -p build
 
 for v in $OS; do
