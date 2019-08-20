@@ -5,6 +5,44 @@ Atlas uses the same core library that CoreDNS uses ([miekg/dns](https://github.c
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/ehazlett/atlas)](https://goreportcard.com/report/github.com/ehazlett/atlas) [![Docs](https://godoc.org/github.com/ehazlett/atlas?status.svg)](http://godoc.org/github.com/ehazlett/atlas) [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fehazlett%2Fatlas%2Fbadge&style=flat)](https://actions-badge.atrox.dev/ehazlett/atlas/goto)
 
+# Installation
+
+## Docker
+Docker multi-arch images are built from master using Github actions.  You should be able to simply `docker pull ehazlett/atlas:latest` and get what you need.
+
+To run with Docker, you will either need to map ports (-p) for all ports you want to expose (at least 53/udp and 9000/tcp).
+
+### Examples
+
+Run Atlas in Docker publishing on default ports:
+
+```bash
+$> docker run -ti -d \
+	--name atlas \
+	-p 53:53/udp \
+	-p 9000:9000 \
+	ehazlett/atlas:latest -b udp://0.0.0.0:53
+```
+
+Run Atlas using Google DNS for upstream with a 30s cache:
+```bash
+$> docker run -ti -d \
+	--name atlas \
+	-p 53:53/udp \
+	-p 9000:9000 \
+	ehazlett/atlas:latest -b udp://0.0.0.0:53 --upstream-dns 8.8.8.8:53 --cache-ttl 30s
+```
+
+## Manual
+
+[![Linux Latest Build](https://img.shields.io/badge/linux-latest-green)](https://ehazlett-public.s3.us-east-2.amazonaws.com/atlas/atlas-linux-latest.zip) [![FreeBSD Latest Build](https://img.shields.io/badge/freebsd-latest-green)](https://ehazlett-public.s3.us-east-2.amazonaws.com/atlas/atlas-freebsd-latest.zip) [![Windows Latest Build](https://img.shields.io/badge/windows-latest-green)](https://ehazlett-public.s3.us-east-2.amazonaws.com/atlas/atlas-windows-latest.zip)
+
+- Download a release either from the "latest" builds above or from the [Releases](https://github.com/ehazlett/atlas/releases).
+- Extract the release to your `PATH`:
+  - Linux: `unzip -d /usr/local/bin atlas-linux-latest.zip`
+  - FreeBSD: `unzip -d /usr/local/bin atlas-freebsd-latest.zip`
+  - Windows: `unzip -d C:\Windows\system32 atlas-windows-latest.zip`
+
 # Usage
 
 ```

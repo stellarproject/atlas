@@ -5,11 +5,9 @@ OS=${OS:-windows freebsd linux}
 mkdir -p build
 
 for v in $OS; do
-    dir=$(mktemp -d)
     root=$(pwd)
     rm -rf ./bin/*
     echo " -> building ${v}"
-    make GOOS=${v} && cd ${dir} && tar czf ${root}/build/${APP}-${v}-latest.tar.gz ${root}/bin/
+    make GOOS=${v} && cd bin && zip -D -r ${root}/build/${APP}-${v}-latest.zip .
     cd ${root}
-    rm -rf ${dir}
 done
