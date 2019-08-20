@@ -95,30 +95,29 @@ OPTIONS:
 To add a new `A` record:
 
 ```bash
-$> actl create -n foo.local r A:127.0.0.1
+$> actl create -n foo.int r A:127.0.0.1
 added 1 record
 ```
 
-This will create a new `A` record for `foo.local` that resolves to `127.0.0.1`.  You
+This will create a new `A` record for `foo.int` that resolves to `127.0.0.1`.  You
 can use `dig` to query Atlas:
 
 ```
-$> dig @127.0.0.1 foo.local
+$> dig @127.0.0.1 foo.int
 
-; <<>> DiG 9.11.5-P1-1ubuntu2.5-Ubuntu <<>> @localhost foo.local
+; <<>> DiG 9.11.5-P1-1ubuntu2.5-Ubuntu <<>> @localhost foo.int
 ; (1 server found)
 ;; global options: +cmd
 ;; Got answer:
-;; WARNING: .local is reserved for Multicast DNS
 ;; You are currently testing what happens when an mDNS query is leaked to DNS
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 2425
 ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
 
 ;; QUESTION SECTION:
-;foo.local.                     IN      A
+;foo.int.                     IN      A
 
 ;; ANSWER SECTION:
-foo.local.              10      IN      A       127.0.0.1
+foo.int.              10      IN      A       127.0.0.1
 
 ;; Query time: 5 msec
 ;; SERVER: 127.0.0.1#53(127.0.0.1)
@@ -134,7 +133,7 @@ You can list all records in the Atlas store:
 ```bash
 $> actl list
 NAME                TYPE                VALUE               OPTIONS
-foo.local           A                   127.0.0.1
+foo.int             A                   127.0.0.1
 ```
 
 ## Delete Records
@@ -142,7 +141,7 @@ foo.local           A                   127.0.0.1
 You can delete records from Atlas as well:
 
 ```bash
-$> actl remove foo.local
-removed foo.local
+$> actl remove foo.int
+removed foo.int
 ```
 
