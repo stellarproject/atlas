@@ -1,7 +1,6 @@
 #!/bin/bash
 APP=${APP:-atlas}
 OS=${OS:-windows freebsd linux}
-BUCKET=${BUCKET:-}
 
 mkdir -p build
 
@@ -14,5 +13,3 @@ for v in $OS; do
     cd ${root}
     rm -rf ${dir}
 done
-
-aws s3 sync --acl public-read ./build/  s3://${BUCKET}/

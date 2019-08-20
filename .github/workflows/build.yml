@@ -26,10 +26,14 @@ jobs:
       run: go build -v .
 
     - name: Package
+      env:
+        BUILD:
+      run: ./script/package.sh
+
+    - name: Release
       uses: actions/aws/cli@master
+      args: s3 sync --acl public-read ./build/ s3://${BUCKET}/
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         BUCKET: ${{ secrets.BUCKET }}
-        BUILD:
-      run: ./script/release.sh
