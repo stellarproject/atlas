@@ -82,6 +82,8 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 	logrus.Debugf("nameserver: query=%q", query)
 	name := getName(query, queryType)
 
+	s.emitter.Emit(emitQuery)
+
 	logrus.Infof("nameserver: looking up %s", name)
 	resp, err := s.Lookup(context.Background(), &api.LookupRequest{
 		Query: name,
@@ -115,17 +117,20 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 
 	// cache
 	started := time.Now()
-	c := s.cache.Get(name)
-	if c == nil {
-		if err := s.cacheRecords(name, resp.Records); err != nil {
-			logrus.WithField("name", name).Warn("error caching results")
+	ttl := uint32(0)
+	if s.cache != nil {
+		c := s.cache.Get(name)
+		if c == nil {
+			if err := s.cacheRecords(name, resp.Records); err != nil {
+				logrus.WithField("name", name).Warn("error caching results")
+			}
+			c = s.cache.Get(name)
+			ttl = uint32(c.TTL.Seconds() + 1)
 		}
-		c = s.cache.Get(name)
 	}
 
 	m.Answer = []dns.RR{}
 	m.Extra = []dns.RR{}
-	ttl := uint32(c.TTL.Seconds() + 1)
 	for _, record := range resp.Records {
 		var rr dns.RR
 		switch record.Type {
@@ -140,6 +145,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 				},
 				A: ip,
 			}
+			s.emitter.Emit(emitLookupA, 1)
 		case api.RecordType_CNAME:
 			rr = &dns.CNAME{
 				Hdr: dns.RR_Header{
@@ -176,6 +182,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 					A: ip,
 				})
 			}
+			s.emitter.Emit(emitLookupCNAME, 1)
 		case api.RecordType_TXT:
 			rr = &dns.TXT{
 				Hdr: dns.RR_Header{
@@ -224,6 +231,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 
 		lookupDuration := time.Since(started)
 		logrus.Debugf("lookup duration: %s", lookupDuration)
+		s.emitter.Emit(emitLookupDuration, lookupDuration.Nanoseconds())
 
 		// set for answer or extra
 		if rr.Header().Rrtype == queryType || rr.Header().Rrtype == dns.TypeCNAME {

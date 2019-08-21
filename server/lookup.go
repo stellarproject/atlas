@@ -48,6 +48,8 @@ func (s *Server) Lookup(ctx context.Context, req *api.LookupRequest) (*api.Looku
 		}
 	}
 
+	s.emitter.Emit(emitLookup, 1)
+
 	return &api.LookupResponse{
 		Records: records,
 	}, nil

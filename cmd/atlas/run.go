@@ -42,6 +42,7 @@ func runServer(cx *cli.Context) error {
 		Datastore:       cx.String("datastore"),
 		GRPCAddress:     cx.String("address"),
 		UpstreamDNSAddr: cx.String("upstream-dns"),
+		MetricsAddr:     cx.String("metrics-addr"),
 		CacheTTL:        cx.Duration("cache-ttl"),
 	}
 

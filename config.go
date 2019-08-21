@@ -43,6 +43,8 @@ type Config struct {
 	TLSInsecureSkipVerify bool
 	// UpstreamDNSAddr is the address to use for external queries
 	UpstreamDNSAddr string
+	// MetricsAddr is the address to enable metrics access
+	MetricsAddr string
 	// CacheTTL is the duration for caching dns lookups
 	CacheTTL time.Duration
 }
