@@ -1,7 +1,9 @@
 # Atlas
 
 The Atlas Nameserver service provides a simple programmable [DNS](https://www.cloudflare.com/learning/dns/what-is-dns/) service.
-Atlas uses the same core library that CoreDNS uses ([miekg/dns](https://github.com/miekg/dns)).
+Atlas uses the same core library that CoreDNS uses ([miekg/dns](https://github.com/miekg/dns)).  It contains a GRPC API and a client
+that can be used for programmatic control.  For an example on using the GRPC API see the [CLI](cmd/actl/).  Atlas also has builtin
+[metrics](https://github.com/ehazlett/atlas#metrics) that can be enabled for monitoring queries, lookups, etc.
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/ehazlett/atlas)](https://goreportcard.com/report/github.com/ehazlett/atlas) [![Docs](https://godoc.org/github.com/ehazlett/atlas?status.svg)](http://godoc.org/github.com/ehazlett/atlas) [![Build Status](https://action-badges.now.sh/JasonEtco/action-badges)](https://github.com/ehazlett/atlas/actions)
 
@@ -145,10 +147,10 @@ removed foo.int
 ```
 
 # Metrics
-Atlas has the ability to expose [Prometheus[] compatible metrics.  By default, the endpoint is disabled.  To enable, add the `--metrics-addr` flag:
+Atlas has the ability to expose [Prometheus](https://prometheus.io) compatible metrics.  By default, the endpoint is disabled.  To enable, add the `--metrics-addr` flag:
 
 
-You can then scrape the `<metrics-addr>/metrics` endpoint.  You will see something like this:
+You can then scrape the `<metrics-addr>/metrics` (i.e. `http://127.0.0.1:9090/metrics`) endpoint.  You will see something like this:
 
 ```
 # HELP atlas_dns_create_total Total number of record creates
