@@ -93,6 +93,8 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 	}
 
 	logrus.Debugf("lookup results: %+v", resp.Records)
+	started := time.Now()
+
 	// forward if empty
 	if len(resp.Records) == 0 {
 		logrus.WithFields(logrus.Fields{
@@ -105,6 +107,11 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 			w.WriteMsg(m)
 			return
 		}
+		lookupDuration := time.Since(started)
+		logrus.Debugf("forward duration: %s", lookupDuration)
+		s.emitter.Emit(emitQueryDuration, lookupDuration.Seconds()*1000)
+		s.emitter.Emit(emitLookupForward, 1)
+
 		x.SetReply(r)
 		w.WriteMsg(x)
 		return
@@ -114,18 +121,20 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 	defer w.WriteMsg(m)
 
 	// cache
-	started := time.Now()
-	c := s.cache.Get(name)
-	if c == nil {
-		if err := s.cacheRecords(name, resp.Records); err != nil {
-			logrus.WithField("name", name).Warn("error caching results")
+	ttl := uint32(0)
+	if s.cache != nil {
+		c := s.cache.Get(name)
+		if c == nil {
+			if err := s.cacheRecords(name, resp.Records); err != nil {
+				logrus.WithField("name", name).Warn("error caching results")
+			}
+			c = s.cache.Get(name)
+			ttl = uint32(c.TTL.Seconds() + 1)
 		}
-		c = s.cache.Get(name)
 	}
 
 	m.Answer = []dns.RR{}
 	m.Extra = []dns.RR{}
-	ttl := uint32(c.TTL.Seconds() + 1)
 	for _, record := range resp.Records {
 		var rr dns.RR
 		switch record.Type {
@@ -140,6 +149,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 				},
 				A: ip,
 			}
+			s.emitter.Emit(emitLookupA, 1)
 		case api.RecordType_CNAME:
 			rr = &dns.CNAME{
 				Hdr: dns.RR_Header{
@@ -176,6 +186,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 					A: ip,
 				})
 			}
+			s.emitter.Emit(emitLookupCNAME, 1)
 		case api.RecordType_TXT:
 			rr = &dns.TXT{
 				Hdr: dns.RR_Header{
@@ -224,6 +235,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 
 		lookupDuration := time.Since(started)
 		logrus.Debugf("lookup duration: %s", lookupDuration)
+		s.emitter.Emit(emitQueryDuration, lookupDuration.Seconds()*1000)
 
 		// set for answer or extra
 		if rr.Header().Rrtype == queryType || rr.Header().Rrtype == dns.TypeCNAME {

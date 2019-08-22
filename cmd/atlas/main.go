@@ -61,6 +61,10 @@ func main() {
 			Usage: "upstream dns server",
 			Value: "9.9.9.9:53",
 		},
+		cli.StringFlag{
+			Name:  "metrics-addr, m",
+			Usage: "address on which to expose metrics (default: disabled)",
+		},
 		cli.DurationFlag{
 			Name:  "cache-ttl",
 			Usage: "builtin cache ttl (default: disabled)",

@@ -3,7 +3,7 @@
 The Atlas Nameserver service provides a simple programmable [DNS](https://www.cloudflare.com/learning/dns/what-is-dns/) service.
 Atlas uses the same core library that CoreDNS uses ([miekg/dns](https://github.com/miekg/dns)).
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/ehazlett/atlas)](https://goreportcard.com/report/github.com/ehazlett/atlas) [![Docs](https://godoc.org/github.com/ehazlett/atlas?status.svg)](http://godoc.org/github.com/ehazlett/atlas) [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fehazlett%2Fatlas%2Fbadge&style=flat)](https://actions-badge.atrox.dev/ehazlett/atlas/goto)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ehazlett/atlas)](https://goreportcard.com/report/github.com/ehazlett/atlas) [![Docs](https://godoc.org/github.com/ehazlett/atlas?status.svg)](http://godoc.org/github.com/ehazlett/atlas) [![Build Status](https://action-badges.now.sh/JasonEtco/action-badges)](https://github.com/ehazlett/atlas/actions)
 
 # Installation
 
@@ -109,7 +109,6 @@ $> dig @127.0.0.1 foo.int
 ; (1 server found)
 ;; global options: +cmd
 ;; Got answer:
-;; You are currently testing what happens when an mDNS query is leaked to DNS
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 2425
 ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
 
@@ -145,3 +144,40 @@ $> actl remove foo.int
 removed foo.int
 ```
 
+# Metrics
+Atlas has the ability to expose [Prometheus[] compatible metrics.  By default, the endpoint is disabled.  To enable, add the `--metrics-addr` flag:
+
+
+You can then scrape the `<metrics-addr>/metrics` endpoint.  You will see something like this:
+
+```
+# HELP atlas_dns_create_total Total number of record creates
+# TYPE atlas_dns_create_total counter
+atlas_dns_create_total 2
+# HELP atlas_dns_delete_total Total number of record deletes
+# TYPE atlas_dns_delete_total counter
+atlas_dns_delete_total 1
+# HELP atlas_dns_lookup_a_total Total number of A record lookups
+# TYPE atlas_dns_lookup_a_total counter
+atlas_dns_lookup_a_total 201
+# HELP atlas_dns_lookup_cname_total Total number of CNAME record lookups
+# TYPE atlas_dns_lookup_cname_total counter
+atlas_dns_lookup_cname_total 201
+# HELP atlas_dns_lookup_forward_total Total number of upstream lookups
+# TYPE atlas_dns_lookup_forward_total counter
+atlas_dns_lookup_forward_total 452
+# HELP atlas_dns_query_milliseconds Duration of query in milliseconds
+# TYPE atlas_dns_query_milliseconds histogram
+atlas_dns_query_milliseconds_bucket{le="1"} 402
+atlas_dns_query_milliseconds_bucket{le="5"} 402
+atlas_dns_query_milliseconds_bucket{le="10"} 402
+atlas_dns_query_milliseconds_bucket{le="25"} 837
+atlas_dns_query_milliseconds_bucket{le="50"} 851
+atlas_dns_query_milliseconds_bucket{le="100"} 854
+atlas_dns_query_milliseconds_bucket{le="250"} 854
+atlas_dns_query_milliseconds_bucket{le="500"} 854
+atlas_dns_query_milliseconds_bucket{le="1000"} 854
+atlas_dns_query_milliseconds_bucket{le="+Inf"} 854
+atlas_dns_query_milliseconds_sum 6565.383260999997
+atlas_dns_query_milliseconds_count 854
+```

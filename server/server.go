@@ -34,6 +34,17 @@ import (
 	api "github.com/ehazlett/atlas/api/services/nameserver/v1"
 	"github.com/ehazlett/atlas/ds"
 	"github.com/ehazlett/ttlcache"
+	"github.com/olebedev/emitter"
+)
+
+const (
+	maxEventCount     = 4096
+	emitCreateRecord  = "events:create"
+	emitQueryDuration = "events:query:duration"
+	emitLookupA       = "events:lookup:a"
+	emitLookupCNAME   = "events:lookup:cname"
+	emitLookupForward = "events:lookup:forward"
+	emitDeleteRecord  = "events:delete"
 )
 
 var (
@@ -42,9 +53,10 @@ var (
 
 // Server is an Atlas server
 type Server struct {
-	cfg   *atlas.Config
-	ds    ds.Datastore
-	cache *ttlcache.TTLCache
+	cfg     *atlas.Config
+	ds      ds.Datastore
+	cache   *ttlcache.TTLCache
+	emitter *emitter.Emitter
 }
 
 // NewServer returns a new server
@@ -54,8 +66,9 @@ func NewServer(cfg *atlas.Config) (*Server, error) {
 		return nil, err
 	}
 	srv := &Server{
-		cfg: cfg,
-		ds:  ds,
+		cfg:     cfg,
+		ds:      ds,
+		emitter: emitter.New(maxEventCount),
 	}
 	if cfg.CacheTTL != 0 {
 		c, err := ttlcache.NewTTLCache(cfg.CacheTTL)
@@ -77,11 +90,15 @@ func (s *Server) Register(server *grpc.Server) error {
 
 // Start starts the embedded DNS server
 func (s *Server) Start() error {
+	if s.cfg.MetricsAddr != "" {
+		go s.startMetricsServer()
+	}
 	return s.startDNSServer()
 }
 
 // Stop is used to stop and release resources
 func (s *Server) Stop() error {
+	s.emitter.Off("*")
 	return nil
 }
 
