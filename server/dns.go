@@ -82,8 +82,6 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 	logrus.Debugf("nameserver: query=%q", query)
 	name := getName(query, queryType)
 
-	s.emitter.Emit(emitQuery)
-
 	logrus.Infof("nameserver: looking up %s", name)
 	resp, err := s.Lookup(context.Background(), &api.LookupRequest{
 		Query: name,
@@ -95,6 +93,8 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 	}
 
 	logrus.Debugf("lookup results: %+v", resp.Records)
+	started := time.Now()
+
 	// forward if empty
 	if len(resp.Records) == 0 {
 		logrus.WithFields(logrus.Fields{
@@ -107,6 +107,11 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 			w.WriteMsg(m)
 			return
 		}
+		lookupDuration := time.Since(started)
+		logrus.Debugf("forward duration: %s", lookupDuration)
+		s.emitter.Emit(emitQueryDuration, lookupDuration.Seconds()*1000)
+		s.emitter.Emit(emitLookupForward, 1)
+
 		x.SetReply(r)
 		w.WriteMsg(x)
 		return
@@ -116,7 +121,6 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 	defer w.WriteMsg(m)
 
 	// cache
-	started := time.Now()
 	ttl := uint32(0)
 	if s.cache != nil {
 		c := s.cache.Get(name)
@@ -231,7 +235,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 
 		lookupDuration := time.Since(started)
 		logrus.Debugf("lookup duration: %s", lookupDuration)
-		s.emitter.Emit(emitLookupDuration, lookupDuration.Nanoseconds())
+		s.emitter.Emit(emitQueryDuration, lookupDuration.Seconds()*1000)
 
 		// set for answer or extra
 		if rr.Header().Rrtype == queryType || rr.Header().Rrtype == dns.TypeCNAME {

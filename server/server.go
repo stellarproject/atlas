@@ -38,15 +38,13 @@ import (
 )
 
 const (
-	maxEventCount      = 1024
-	emitCreateRecord   = "events:create"
-	emitQuery          = "events:query"
-	emitLookup         = "events:lookup"
-	emitLookupA        = "events:lookup:a"
-	emitLookupCNAME    = "events:lookup:cname"
-	emitLookupForward  = "events:lookup:forward"
-	emitDeleteRecord   = "events:create"
-	emitLookupDuration = "events:lookup:duration"
+	maxEventCount     = 4096
+	emitCreateRecord  = "events:create"
+	emitQueryDuration = "events:query:duration"
+	emitLookupA       = "events:lookup:a"
+	emitLookupCNAME   = "events:lookup:cname"
+	emitLookupForward = "events:lookup:forward"
+	emitDeleteRecord  = "events:delete"
 )
 
 var (
@@ -94,11 +92,6 @@ func (s *Server) Register(server *grpc.Server) error {
 func (s *Server) Start() error {
 	if s.cfg.MetricsAddr != "" {
 		go s.startMetricsServer()
-		go func() {
-			for evt := range s.emitter.On("*") {
-				logrus.Debugf("event: %+v", evt)
-			}
-		}()
 	}
 	return s.startDNSServer()
 }

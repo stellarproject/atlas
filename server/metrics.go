@@ -26,9 +26,86 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
 )
+
+const (
+	namespace = "atlas"
+	subsystem = "dns"
+)
+
+var (
+	lookupACounter = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Subsystem: subsystem,
+			Name:      "lookup_a_total",
+			Help:      "Total number of A record lookups",
+		},
+	)
+	lookupCNAMECounter = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Subsystem: subsystem,
+			Name:      "lookup_cname_total",
+			Help:      "Total number of CNAME record lookups",
+		},
+	)
+	lookupForwardCounter = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Subsystem: subsystem,
+			Name:      "lookup_forward_total",
+			Help:      "Total number of upstream lookups",
+		},
+	)
+	queryDurationHistogram = prometheus.NewHistogram(
+		prometheus.HistogramOpts{
+			Namespace: namespace,
+			Subsystem: subsystem,
+			Name:      "query_milliseconds",
+			Help:      "Duration of query in milliseconds",
+			Buckets: []float64{
+				1,
+				5,
+				10,
+				25,
+				50,
+				100,
+				250,
+				500,
+				1000,
+			},
+		},
+	)
+	createRecordCounter = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Subsystem: subsystem,
+			Name:      "create_total",
+			Help:      "Total number of record creates",
+		},
+	)
+	deleteRecordCounter = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Subsystem: subsystem,
+			Name:      "delete_total",
+			Help:      "Total number of record deletes",
+		},
+	)
+)
+
+func init() {
+	prometheus.MustRegister(lookupACounter)
+	prometheus.MustRegister(lookupCNAMECounter)
+	prometheus.MustRegister(lookupForwardCounter)
+	prometheus.MustRegister(queryDurationHistogram)
+	prometheus.MustRegister(createRecordCounter)
+	prometheus.MustRegister(deleteRecordCounter)
+}
 
 func (s *Server) startMetricsServer() error {
 	u, err := url.Parse(s.cfg.MetricsAddr)
@@ -41,6 +118,55 @@ func (s *Server) startMetricsServer() error {
 	logrus.WithFields(logrus.Fields{
 		"addr": s.cfg.MetricsAddr,
 	}).Debug("starting metrics server")
+
+	// start emitter listeners
+	s.startMetricListener()
+
 	http.Handle("/metrics", promhttp.Handler())
 	return http.ListenAndServe(u.Host, nil)
+}
+
+func (s *Server) startMetricListener() {
+	go s.metricListenerLookupATotal()
+	go s.metricListenerLookupCNAMETotal()
+	go s.metricListenerLookupForwardTotal()
+	go s.metricListenerQueryDuration()
+	go s.metricListenerCreateRecord()
+	go s.metricListenerDeleteRecord()
+}
+
+func (s *Server) metricListenerLookupATotal() {
+	for range s.emitter.On(emitLookupA) {
+		lookupACounter.Inc()
+	}
+}
+
+func (s *Server) metricListenerLookupCNAMETotal() {
+	for range s.emitter.On(emitLookupCNAME) {
+		lookupCNAMECounter.Inc()
+	}
+}
+
+func (s *Server) metricListenerLookupForwardTotal() {
+	for range s.emitter.On(emitLookupForward) {
+		lookupForwardCounter.Inc()
+	}
+}
+
+func (s *Server) metricListenerQueryDuration() {
+	for evt := range s.emitter.On(emitQueryDuration) {
+		queryDurationHistogram.Observe(evt.Float(0))
+	}
+}
+
+func (s *Server) metricListenerCreateRecord() {
+	for evt := range s.emitter.On(emitCreateRecord) {
+		createRecordCounter.Add(evt.Float(0))
+	}
+}
+
+func (s *Server) metricListenerDeleteRecord() {
+	for range s.emitter.On(emitDeleteRecord) {
+		deleteRecordCounter.Inc()
+	}
 }

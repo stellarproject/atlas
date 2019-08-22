@@ -33,6 +33,6 @@ func (s *Server) Create(ctx context.Context, req *api.CreateRequest) (*ptypes.Em
 	if err := s.ds.Set(req.Name, req.Records); err != nil {
 		return empty, err
 	}
-	s.emitter.Emit(emitCreateRecord, 1)
+	s.emitter.Emit(emitCreateRecord, float64(len(req.Records)))
 	return empty, nil
 }

@@ -33,6 +33,6 @@ func (s *Server) Delete(ctx context.Context, req *api.DeleteRequest) (*ptypes.Em
 	if err := s.ds.Delete(req.Name); err != nil {
 		return empty, err
 	}
-	s.emitter.Emit(emitDeleteRecord, 1)
+	s.emitter.Emit(emitDeleteRecord)
 	return empty, nil
 }
