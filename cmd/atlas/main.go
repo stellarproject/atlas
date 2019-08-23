@@ -56,10 +56,10 @@ func main() {
 			Usage: "grpc address",
 			Value: "tcp://127.0.0.1:9000",
 		},
-		cli.StringFlag{
+		cli.StringSliceFlag{
 			Name:  "upstream-dns",
-			Usage: "upstream dns server",
-			Value: "9.9.9.9:53",
+			Usage: "upstream dns servers",
+			Value: &cli.StringSlice{},
 		},
 		cli.StringFlag{
 			Name:  "metrics-addr, m",

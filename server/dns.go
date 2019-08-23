@@ -97,13 +97,22 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 
 	// forward if empty
 	if len(resp.Records) == 0 {
-		logrus.WithFields(logrus.Fields{
-			"query":    name,
-			"upstream": s.cfg.UpstreamDNSAddr,
-		}).Debug("forwarding")
-		x, err := dns.Exchange(r, s.cfg.UpstreamDNSAddr)
-		if err != nil {
-			logrus.Errorf("nameserver: error forwarding lookup: %+v", err)
+		var response *dns.Msg
+		for _, upstream := range s.cfg.UpstreamDNSAddrs {
+			logrus.WithFields(logrus.Fields{
+				"query":    name,
+				"upstream": upstream,
+			}).Debug("forwarding")
+
+			if response, err = dns.Exchange(r, upstream); err != nil {
+				logrus.Errorf("nameserver: error forwarding lookup: %+v", err)
+				continue
+			}
+			break
+		}
+		if response == nil {
+			logrus.Errorf("nameserver: no response from upstreams")
+			m.SetRcode(r, dns.RcodeServerFailure)
 			w.WriteMsg(m)
 			return
 		}
@@ -112,8 +121,8 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 		s.emitter.Emit(emitQueryDuration, lookupDuration.Seconds()*1000)
 		s.emitter.Emit(emitLookupForward, 1)
 
-		x.SetReply(r)
-		w.WriteMsg(x)
+		response.SetReply(r)
+		w.WriteMsg(response)
 		return
 	}
 

@@ -38,12 +38,15 @@ import (
 
 func runServer(cx *cli.Context) error {
 	cfg := &atlas.Config{
-		BindAddress:     cx.String("bind"),
-		Datastore:       cx.String("datastore"),
-		GRPCAddress:     cx.String("address"),
-		UpstreamDNSAddr: cx.String("upstream-dns"),
-		MetricsAddr:     cx.String("metrics-addr"),
-		CacheTTL:        cx.Duration("cache-ttl"),
+		BindAddress:      cx.String("bind"),
+		Datastore:        cx.String("datastore"),
+		GRPCAddress:      cx.String("address"),
+		UpstreamDNSAddrs: cx.StringSlice("upstream-dns"),
+		MetricsAddr:      cx.String("metrics-addr"),
+		CacheTTL:         cx.Duration("cache-ttl"),
+	}
+	if len(cfg.UpstreamDNSAddrs) == 0 {
+		cfg.UpstreamDNSAddrs = []string{"9.9.9.9:53"}
 	}
 
 	srv, err := server.NewServer(cfg)

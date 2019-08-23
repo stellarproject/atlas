@@ -41,8 +41,8 @@ type Config struct {
 	TLSClientKey string
 	// TLSInsecureSkipVerify disables certificate verification
 	TLSInsecureSkipVerify bool
-	// UpstreamDNSAddr is the address to use for external queries
-	UpstreamDNSAddr string
+	// UpstreamDNSAddrs is the addresses to use for external queries
+	UpstreamDNSAddrs []string
 	// MetricsAddr is the address to enable metrics access
 	MetricsAddr string
 	// CacheTTL is the duration for caching dns lookups
