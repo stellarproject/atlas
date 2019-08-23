@@ -1,5 +1,5 @@
 /*
-   Copyright 2019 Evan Hazlett <ejhazlett@gmail.com>
+   Copyright 2019 Stellar Project
 
    Permission is hereby granted, free of charge, to any person obtaining a copy of
    this software and associated documentation files (the "Software"), to deal in the
@@ -24,8 +24,8 @@ package main
 import (
 	"os"
 
-	"github.com/ehazlett/atlas/version"
 	log "github.com/sirupsen/logrus"
+	"github.com/stellarproject/atlas/version"
 	"github.com/urfave/cli"
 )
 
@@ -33,7 +33,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = version.Name
 	app.Version = version.BuildVersion()
-	app.Author = "@ehazlett"
+	app.Author = "@stellarproject"
 	app.Email = ""
 	app.Usage = version.Description
 	app.Flags = []cli.Flag{

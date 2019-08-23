@@ -3,18 +3,9 @@
 The Atlas Nameserver service provides a simple programmable [DNS](https://www.cloudflare.com/learning/dns/what-is-dns/) service.
 Atlas uses the same core library that CoreDNS uses ([miekg/dns](https://github.com/miekg/dns)).  It contains a GRPC API and a client
 that can be used for programmatic control.  For an example on using the GRPC API see the [CLI](cmd/actl/).  Atlas also has builtin
-[metrics](https://github.com/ehazlett/atlas#metrics) that can be enabled for monitoring queries, lookups, etc.
+[metrics](https://github.com/stellarproject/atlas#metrics) that can be enabled for monitoring queries, lookups, etc.
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/ehazlett/atlas)](https://goreportcard.com/report/github.com/ehazlett/atlas) [![Docs](https://godoc.org/github.com/ehazlett/atlas?status.svg)](http://godoc.org/github.com/ehazlett/atlas) [![Build Status](https://action-badges.now.sh/JasonEtco/action-badges)](https://github.com/ehazlett/atlas/actions)
-
-# Installation
-
-## Docker
-[![Docker Image](https://img.shields.io/badge/ehazlett%2Fatlas%3Alatest-docker%20image-blue)](https://cloud.docker.com/u/ehazlett/repository/docker/ehazlett/atlas)
-
-A [Docker](https://www.docker.com) image is built upon every merge to master.  The latest is [ehazlett/atlas:latest](https://cloud.docker.com/u/ehazlett/repository/docker/ehazlett/atlas)
-
-To run with Docker, you will need to map ports (-p) for all ports you want to expose (at least 53/udp and 9000/tcp).
+[![Go Report Card](https://goreportcard.com/badge/github.com/stellarproject/atlas)](https://goreportcard.com/report/github.com/stellarproject/atlas) [![Docs](https://godoc.org/github.com/stellarproject/atlas?status.svg)](http://godoc.org/github.com/stellarproject/atlas) [![Build Status](https://action-badges.now.sh/JasonEtco/action-badges)](https://github.com/stellarproject/atlas/actions)
 
 ### Examples
 
@@ -25,7 +16,7 @@ $> docker run -ti -d \
 	--name atlas \
 	-p 53:53/udp \
 	-p 9000:9000 \
-	ehazlett/atlas:latest -b udp://0.0.0.0:53
+	stellarproject/atlas:latest -b udp://0.0.0.0:53
 ```
 
 Run Atlas using Google DNS for upstream with a 30s cache:
@@ -34,14 +25,14 @@ $> docker run -ti -d \
 	--name atlas \
 	-p 53:53/udp \
 	-p 9000:9000 \
-	ehazlett/atlas:latest -b udp://0.0.0.0:53 --upstream-dns 8.8.8.8:53 --cache-ttl 30s
+	stellarproject/atlas:latest -b udp://0.0.0.0:53 --upstream-dns 8.8.8.8:53 --cache-ttl 30s
 ```
 
 ## Manual
 
-[![Linux Latest Build](https://img.shields.io/badge/linux-latest-green)](https://ehazlett-public.s3.us-east-2.amazonaws.com/atlas/atlas-linux-latest.zip) [![FreeBSD Latest Build](https://img.shields.io/badge/freebsd-latest-green)](https://ehazlett-public.s3.us-east-2.amazonaws.com/atlas/atlas-freebsd-latest.zip) [![Windows Latest Build](https://img.shields.io/badge/windows-latest-green)](https://ehazlett-public.s3.us-east-2.amazonaws.com/atlas/atlas-windows-latest.zip)
+[![Linux Latest Build](https://img.shields.io/badge/linux-latest-green)](https://stellarproject-public.s3.us-east-2.amazonaws.com/atlas/atlas-linux-latest.zip) [![FreeBSD Latest Build](https://img.shields.io/badge/freebsd-latest-green)](https://stellarproject-public.s3.us-east-2.amazonaws.com/atlas/atlas-freebsd-latest.zip) [![Windows Latest Build](https://img.shields.io/badge/windows-latest-green)](https://stellarproject-public.s3.us-east-2.amazonaws.com/atlas/atlas-windows-latest.zip)
 
-- Download a release either from the "latest" builds above or from the [Releases](https://github.com/ehazlett/atlas/releases).
+- Download a release either from the "latest" builds above or from the [Releases](https://github.com/stellarproject/atlas/releases).
 - Extract the release to your `PATH`:
   - Linux: `unzip -d /usr/local/bin atlas-linux-latest.zip`
   - FreeBSD: `unzip -d /usr/local/bin atlas-freebsd-latest.zip`
@@ -60,7 +51,7 @@ VERSION:
    0.1.0 (c568ab98) linux/amd64
 
 AUTHOR:
-   @ehazlett
+   @stellarproject
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command

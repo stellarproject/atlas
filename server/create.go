@@ -1,5 +1,5 @@
 /*
-   Copyright 2019 Evan Hazlett <ejhazlett@gmail.com>
+   Copyright 2019 Stellar Project
 
    Permission is hereby granted, free of charge, to any person obtaining a copy of
    this software and associated documentation files (the "Software"), to deal in the
@@ -24,8 +24,8 @@ package server
 import (
 	"context"
 
-	api "github.com/ehazlett/atlas/api/services/nameserver/v1"
 	ptypes "github.com/gogo/protobuf/types"
+	api "github.com/stellarproject/atlas/api/services/nameserver/v1"
 )
 
 // Create creates records in the Atlas datastore

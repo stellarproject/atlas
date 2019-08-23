@@ -1,7 +1,7 @@
 // +build linux freebsd
 
 /*
-   Copyright 2019 Evan Hazlett <ejhazlett@gmail.com>
+   Copyright 2019 Stellar Project
 
    Permission is hereby granted, free of charge, to any person obtaining a copy of
    this software and associated documentation files (the "Software"), to deal in the
@@ -28,8 +28,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/ehazlett/atlas/server"
 	"github.com/sirupsen/logrus"
+	"github.com/stellarproject/atlas/server"
 )
 
 func waitForExit(srv *server.Server) {

@@ -1,5 +1,5 @@
 /*
-   Copyright 2019 Evan Hazlett <ejhazlett@gmail.com>
+   Copyright 2019 Stellar Project
 
    Permission is hereby granted, free of charge, to any person obtaining a copy of
    this software and associated documentation files (the "Software"), to deal in the
@@ -28,9 +28,9 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/ehazlett/atlas"
-	api "github.com/ehazlett/atlas/api/services/nameserver/v1"
 	"github.com/sirupsen/logrus"
+	"github.com/stellarproject/atlas"
+	api "github.com/stellarproject/atlas/api/services/nameserver/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )

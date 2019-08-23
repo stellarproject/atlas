@@ -1,5 +1,5 @@
 /*
-   Copyright 2019 Evan Hazlett <ejhazlett@gmail.com>
+   Copyright 2019 Stellar Project
 
    Permission is hereby granted, free of charge, to any person obtaining a copy of
    this software and associated documentation files (the "Software"), to deal in the
@@ -25,10 +25,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ehazlett/atlas"
-	"github.com/ehazlett/atlas/client"
-	"github.com/ehazlett/atlas/version"
 	"github.com/sirupsen/logrus"
+	"github.com/stellarproject/atlas"
+	"github.com/stellarproject/atlas/client"
+	"github.com/stellarproject/atlas/version"
 	"github.com/urfave/cli"
 	"google.golang.org/grpc"
 )
@@ -37,7 +37,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "actl"
 	app.Version = version.BuildVersion()
-	app.Author = "@ehazlett"
+	app.Author = "@stellarproject"
 	app.Email = ""
 	app.Usage = version.Description
 	app.Flags = []cli.Flag{

@@ -1,4 +1,4 @@
-module github.com/ehazlett/atlas
+module github.com/stellarproject/atlas
 
 go 1.12
 

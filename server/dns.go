@@ -1,5 +1,5 @@
 /*
-   Copyright 2019 Evan Hazlett <ejhazlett@gmail.com>
+   Copyright 2019 Stellar Project
 
    Permission is hereby granted, free of charge, to any person obtaining a copy of
    this software and associated documentation files (the "Software"), to deal in the
@@ -30,11 +30,11 @@ import (
 	"time"
 
 	"github.com/containerd/typeurl"
-	api "github.com/ehazlett/atlas/api/services/nameserver/v1"
-	"github.com/ehazlett/atlas/api/types"
 	"github.com/miekg/dns"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
+	api "github.com/stellarproject/atlas/api/services/nameserver/v1"
+	"github.com/stellarproject/atlas/api/types"
 )
 
 // TODO: support multiple RR per name
