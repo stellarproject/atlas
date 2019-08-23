@@ -7,6 +7,15 @@ that can be used for programmatic control.  For an example on using the GRPC API
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/stellarproject/atlas)](https://goreportcard.com/report/github.com/stellarproject/atlas) [![Docs](https://godoc.org/github.com/stellarproject/atlas?status.svg)](http://godoc.org/github.com/stellarproject/atlas) [![Build Status](https://action-badges.now.sh/JasonEtco/action-badges)](https://github.com/stellarproject/atlas/actions)
 
+# Installation
+
+## Docker
+[![Docker Image](https://img.shields.io/badge/stellarproject%2Fatlas%3Alatest-docker%20image-blue)](https://cloud.docker.com/u/stellarproject/repository/docker/stellarproject/atlas)
+
+A [Docker](https://www.docker.com) image is built upon every merge to master.  The latest is [stellarproject/atlas:latest](https://cloud.docker.com/u/stellarproject/repository/docker/stellarproject/atlas)
+
+To run with Docker, you will need to map ports (-p) for all ports you want to expose (at least 53/udp and 9000/tcp).
+
 ### Examples
 
 Run Atlas in Docker publishing on default ports:
