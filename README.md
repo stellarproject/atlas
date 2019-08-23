@@ -39,7 +39,7 @@ $> docker run -ti -d \
 
 ## Manual
 
-[![Linux Latest Build](https://img.shields.io/badge/linux-latest-green)](https://stellarproject-public.s3.us-east-2.amazonaws.com/atlas/atlas-linux-latest.zip) [![FreeBSD Latest Build](https://img.shields.io/badge/freebsd-latest-green)](https://stellarproject-public.s3.us-east-2.amazonaws.com/atlas/atlas-freebsd-latest.zip) [![Windows Latest Build](https://img.shields.io/badge/windows-latest-green)](https://stellarproject-public.s3.us-east-2.amazonaws.com/atlas/atlas-windows-latest.zip)
+[![Linux Latest Build](https://img.shields.io/badge/linux-latest-green)](https://stellarproject-public.s3.amazonaws.com/atlas/atlas-linux-latest.zip) [![FreeBSD Latest Build](https://img.shields.io/badge/freebsd-latest-green)](https://stellarproject-public.s3.amazonaws.com/atlas/atlas-freebsd-latest.zip) [![Windows Latest Build](https://img.shields.io/badge/windows-latest-green)](https://stellarproject-public.s3.amazonaws.com/atlas/atlas-windows-latest.zip)
 
 - Download a release either from the "latest" builds above or from the [Releases](https://github.com/stellarproject/atlas/releases).
 - Extract the release to your `PATH`:
