@@ -13,6 +13,7 @@ service Nameserver {
         rpc List(ListRequest) returns (ListResponse);
         rpc Create(CreateRequest) returns (google.protobuf.Empty);
         rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+        rpc Export(ExportRequest) returns (ExportResponse);
 }
 
 message LookupRequest {
@@ -54,4 +55,10 @@ message CreateRequest {
 
 message DeleteRequest {
         string name = 1;
+}
+
+message ExportRequest {}
+
+message ExportResponse {
+        bytes data = 1;
 }

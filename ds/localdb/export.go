@@ -19,37 +19,25 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package ds
+package localdb
 
 import (
-	api "github.com/stellarproject/atlas/api/services/nameserver/v1"
+	"bytes"
+
+	bolt "go.etcd.io/bbolt"
 )
 
-const (
-	// ServiceID is the id of the datastore service
-	ServiceID = "io.stellarproject.atlas.datastore"
-)
+// Export exports all records from the datastore
+func (l *LocalDB) Export() ([]byte, error) {
+	b := &bytes.Buffer{}
+	if err := l.db.View(func(tx *bolt.Tx) error {
+		if _, err := tx.WriteTo(b); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
 
-// Filter allows for filtering of records
-type Filter interface {
-	// Apply is the implementation needed to filter records
-	Apply(r []*api.Record) ([]*api.Record, error)
-}
-
-// Datastore defines the datastore interface
-type Datastore interface {
-	// ID returns the id of the datastore
-	ID() string
-	// Get gets the specified records by key
-	Get(key string) ([]*api.Record, error)
-	// Set sets the key to the records
-	Set(key string, v []*api.Record) error
-	// Search returns a list of records optionally filtered
-	Search(key string, filters ...Filter) ([]*api.Record, error)
-	// Delete deletes records by key
-	Delete(key string) error
-	// Close optionally closes any resources in use by the datastore
-	Close() error
-	// Export exports all data from the datastore
-	Export() ([]byte, error)
+	return b.Bytes(), nil
 }
