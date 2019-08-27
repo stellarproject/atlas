@@ -70,13 +70,13 @@ func main() {
 		if c.Bool("debug") {
 			logrus.SetLevel(logrus.DebugLevel)
 		}
-
 		return nil
 	}
 	app.Commands = []cli.Command{
 		listRecordsCommand,
 		createRecordCommand,
 		deleteRecordCommand,
+		exportCommand,
 	}
 
 	if err := app.Run(os.Args); err != nil {
