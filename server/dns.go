@@ -26,7 +26,6 @@ import (
 	"fmt"
 	"net"
 	"net/url"
-	"strings"
 	"time"
 
 	"github.com/containerd/typeurl"
@@ -80,7 +79,7 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 	queryType := m.Question[0].Qtype
 
 	logrus.Debugf("nameserver: query=%q", query)
-	name := getName(query, queryType)
+	name := getName(query)
 
 	logrus.Infof("nameserver: looking up %s", name)
 	resp, err := s.Lookup(context.Background(), &api.LookupRequest{
@@ -246,13 +245,8 @@ func (s *Server) handler(w dns.ResponseWriter, r *dns.Msg) {
 	}
 }
 
-func getName(query string, queryType uint16) string {
-	// adjust lookup for srv
-	if queryType == dns.TypeSRV {
-		p := strings.Split(query, ".")
-		v := strings.Join(p[2:], ".")
-		return v[:len(v)-1]
-	}
+func getName(query string) string {
+	// strip off the trailing fqdn period
 	return query[:len(query)-1]
 }
 
