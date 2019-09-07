@@ -79,6 +79,10 @@ test:
 install:
 	@install -D -m 755 bin/* /usr/local/bin/
 
+release:
+	@./script/package.sh
+	@aws s3 sync --acl public-read ./build/ s3://stellarproject-public/atlas/
+
 clean:
 	@rm -rf bin/
 	@rm -rf *.tar.gz
