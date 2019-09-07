@@ -97,7 +97,7 @@ OPTIONS:
 To add a new `A` record:
 
 ```bash
-$> actl create -n foo.int r A:127.0.0.1
+$> actl create -n foo.int -r A:127.0.0.1
 added 1 record
 ```
 
