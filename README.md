@@ -142,7 +142,7 @@ foo.int             A                   127.0.0.1
 You can delete records from Atlas as well:
 
 ```bash
-$> actl remove foo.int
+$> actl delete foo.int
 removed foo.int
 ```
 
