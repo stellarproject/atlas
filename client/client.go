@@ -30,7 +30,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/stellarproject/atlas"
-	api "github.com/stellarproject/atlas/api/services/nameserver/v1"
+	api "github.com/stellarproject/atlas/api/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )

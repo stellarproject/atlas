@@ -21,14 +21,14 @@
 
 package atlas
 
-import "time"
-
 // Config is the configuration used for the stellar server
 type Config struct {
-	// BindAddress is the address on which the DNS server will bind
-	BindAddress string
-	// Datastore is the uri to the preferred datastore backend
-	Datastore string
+	// Port is the port on which the DNS server will bind
+	Port int
+	// RedisURL is the uri to the redis backend
+	RedisURL string
+	// ConfigPath is the path to the generated config
+	ConfigPath string
 	// GRPCAddress is the address for the grpc server
 	GRPCAddress string
 	// TLSCertificate is the certificate used for grpc communication
@@ -43,8 +43,4 @@ type Config struct {
 	TLSInsecureSkipVerify bool
 	// UpstreamDNSAddr is the address to use for external queries
 	UpstreamDNSAddr string
-	// MetricsAddr is the address to enable metrics access
-	MetricsAddr string
-	// CacheTTL is the duration for caching dns lookups
-	CacheTTL time.Duration
 }

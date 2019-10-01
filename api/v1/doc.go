@@ -19,19 +19,4 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package server
-
-import (
-	"crypto/sha256"
-	"fmt"
-
-	api "github.com/stellarproject/atlas/api/v1"
-)
-
-func getRecordID(r *api.Record) string {
-	h := sha256.New()
-	h.Write([]byte(r.Type.String()))
-	h.Write([]byte(r.Name))
-	h.Write([]byte(r.Value))
-	return fmt.Sprintf("%x", h.Sum(nil))
-}
+package v1

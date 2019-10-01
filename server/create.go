@@ -23,16 +23,23 @@ package server
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/gogo/protobuf/proto"
 	ptypes "github.com/gogo/protobuf/types"
-	api "github.com/stellarproject/atlas/api/services/nameserver/v1"
+	api "github.com/stellarproject/atlas/api/v1"
 )
 
 // Create creates records in the Atlas datastore
 func (s *Server) Create(ctx context.Context, req *api.CreateRequest) (*ptypes.Empty, error) {
-	if err := s.ds.Set(req.Name, req.Records); err != nil {
-		return empty, err
+	for _, record := range req.Records {
+		data, err := proto.Marshal(record)
+		if err != nil {
+			return empty, err
+		}
+		if _, err := s.do(ctx, "SET", fmt.Sprintf(recordKey, req.Name, record.Type.String()), data); err != nil {
+			return empty, err
+		}
 	}
-	s.emitter.Emit(emitCreateRecord, float64(len(req.Records)))
 	return empty, nil
 }

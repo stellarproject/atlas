@@ -1,9 +1,5 @@
-# github.com/beorn7/perks v1.0.1
-github.com/beorn7/perks/quantile
 # github.com/containerd/typeurl v0.0.0-20190515163108-7312978f2987
 github.com/containerd/typeurl
-# github.com/ehazlett/ttlcache v0.0.0-20190820213212-4400e3aef9f0
-github.com/ehazlett/ttlcache
 # github.com/gogo/googleapis v1.2.0
 github.com/gogo/googleapis/google/api
 # github.com/gogo/protobuf v1.2.1
@@ -18,53 +14,26 @@ github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
 github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
+# github.com/gomodule/redigo v2.0.0+incompatible
+github.com/gomodule/redigo/redis
+github.com/gomodule/redigo/internal
 # github.com/konsorten/go-windows-terminal-sequences v1.0.2
 github.com/konsorten/go-windows-terminal-sequences
-# github.com/matttproud/golang_protobuf_extensions v1.0.1
-github.com/matttproud/golang_protobuf_extensions/pbutil
-# github.com/miekg/dns v1.1.15
-github.com/miekg/dns
-# github.com/olebedev/emitter v0.0.0-20190110104742-e8d1457e6aee
-github.com/olebedev/emitter
 # github.com/pkg/errors v0.8.1
 github.com/pkg/errors
-# github.com/prometheus/client_golang v1.1.0
-github.com/prometheus/client_golang/prometheus/promhttp
-github.com/prometheus/client_golang/prometheus
-github.com/prometheus/client_golang/prometheus/internal
-# github.com/prometheus/client_model v0.0.0-20190129233127-fd36f4220a90
-github.com/prometheus/client_model/go
-# github.com/prometheus/common v0.6.0
-github.com/prometheus/common/expfmt
-github.com/prometheus/common/model
-github.com/prometheus/common/internal/bitbucket.org/ww/goautoneg
-# github.com/prometheus/procfs v0.0.3
-github.com/prometheus/procfs
-github.com/prometheus/procfs/internal/fs
 # github.com/sirupsen/logrus v1.4.2
 github.com/sirupsen/logrus
 # github.com/urfave/cli v1.21.0
 github.com/urfave/cli
-# go.etcd.io/bbolt v1.3.3
-go.etcd.io/bbolt
-# golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
-golang.org/x/crypto/ed25519
-golang.org/x/crypto/ed25519/internal/edwards25519
 # golang.org/x/net v0.0.0-20190613194153-d28f0bde5980
 golang.org/x/net/trace
-golang.org/x/net/ipv4
-golang.org/x/net/ipv6
 golang.org/x/net/internal/timeseries
 golang.org/x/net/http2
 golang.org/x/net/http2/hpack
-golang.org/x/net/bpf
-golang.org/x/net/internal/iana
-golang.org/x/net/internal/socket
 golang.org/x/net/http/httpguts
 golang.org/x/net/idna
 # golang.org/x/sys v0.0.0-20190813064441-fde4db37ae7a
 golang.org/x/sys/unix
-golang.org/x/sys/windows
 # golang.org/x/text v0.3.0
 golang.org/x/text/secure/bidirule
 golang.org/x/text/unicode/bidi

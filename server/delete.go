@@ -23,16 +23,23 @@ package server
 
 import (
 	"context"
+	"fmt"
 
 	ptypes "github.com/gogo/protobuf/types"
-	api "github.com/stellarproject/atlas/api/services/nameserver/v1"
+	"github.com/gomodule/redigo/redis"
+	api "github.com/stellarproject/atlas/api/v1"
 )
 
 // Delete removes records from Atlas
 func (s *Server) Delete(ctx context.Context, req *api.DeleteRequest) (*ptypes.Empty, error) {
-	if err := s.ds.Delete(req.Name); err != nil {
+	keys, err := redis.Strings(s.do(ctx, "KEYS", fmt.Sprintf(recordKey, req.Name, "*")))
+	if err != nil {
 		return empty, err
 	}
-	s.emitter.Emit(emitDeleteRecord)
+	for _, key := range keys {
+		if _, err := s.do(ctx, "DEL", key); err != nil {
+			return empty, err
+		}
+	}
 	return empty, nil
 }

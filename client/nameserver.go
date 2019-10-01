@@ -26,7 +26,7 @@ import (
 	"fmt"
 	"strings"
 
-	api "github.com/stellarproject/atlas/api/services/nameserver/v1"
+	api "github.com/stellarproject/atlas/api/v1"
 )
 
 // Create is used to create new records
@@ -39,18 +39,6 @@ func (c *Client) Create(name string, records []*api.Record) error {
 		return err
 	}
 	return nil
-}
-
-// Lookup performs a lookup for the specified record
-func (c *Client) Lookup(query string) ([]*api.Record, error) {
-	ctx := context.Background()
-	resp, err := c.nameserverService.Lookup(ctx, &api.LookupRequest{
-		Query: query,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return resp.Records, nil
 }
 
 // List returns all records in the datastore

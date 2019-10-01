@@ -29,8 +29,8 @@ import (
 	"text/tabwriter"
 
 	"github.com/containerd/typeurl"
-	api "github.com/stellarproject/atlas/api/services/nameserver/v1"
-	"github.com/stellarproject/atlas/api/types"
+	api "github.com/stellarproject/atlas/api/v1"
+	"github.com/stellarproject/atlas/api/v1/types"
 	"github.com/urfave/cli"
 )
 

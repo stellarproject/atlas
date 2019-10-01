@@ -22,29 +22,24 @@
 package server
 
 import (
+	"context"
 	"io/ioutil"
 	"runtime"
 	"runtime/pprof"
 
 	ptypes "github.com/gogo/protobuf/types"
+	"github.com/gomodule/redigo/redis"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/stellarproject/atlas"
 	"google.golang.org/grpc"
 
-	"github.com/ehazlett/ttlcache"
-	"github.com/olebedev/emitter"
-	api "github.com/stellarproject/atlas/api/services/nameserver/v1"
-	"github.com/stellarproject/atlas/ds"
+	api "github.com/stellarproject/atlas/api/v1"
 )
 
 const (
-	maxEventCount     = 4096
-	emitCreateRecord  = "events:create"
-	emitQueryDuration = "events:query:duration"
-	emitLookupA       = "events:lookup:a"
-	emitLookupCNAME   = "events:lookup:cname"
-	emitLookupForward = "events:lookup:forward"
-	emitDeleteRecord  = "events:delete"
+	recordKey  = "terra.dns.records.%s.%s"
+	publishKey = "terra.dns.update"
 )
 
 var (
@@ -53,29 +48,30 @@ var (
 
 // Server is an Atlas server
 type Server struct {
-	cfg     *atlas.Config
-	ds      ds.Datastore
-	cache   *ttlcache.TTLCache
-	emitter *emitter.Emitter
+	cfg  *atlas.Config
+	pool *redis.Pool
 }
 
 // NewServer returns a new server
 func NewServer(cfg *atlas.Config) (*Server, error) {
-	ds, err := atlas.GetDatastore(cfg.Datastore)
-	if err != nil {
-		return nil, err
-	}
-	srv := &Server{
-		cfg:     cfg,
-		ds:      ds,
-		emitter: emitter.New(maxEventCount),
-	}
-	if cfg.CacheTTL != 0 {
-		c, err := ttlcache.NewTTLCache(cfg.CacheTTL)
+	pool := redis.NewPool(func() (redis.Conn, error) {
+		conn, err := redis.DialURL(cfg.RedisURL)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "unable to connect to redis")
 		}
-		srv.cache = c
+		// TODO
+		//if auth != "" {
+		//	if _, err := conn.Do("AUTH", auth); err != nil {
+		//		conn.Close()
+		//		return nil, errors.Wrap(err, "unable to authenticate to redis")
+		//	}
+		//}
+		return conn, nil
+	}, 10)
+
+	srv := &Server{
+		cfg:  cfg,
+		pool: pool,
 	}
 
 	return srv, nil
@@ -90,15 +86,45 @@ func (s *Server) Register(server *grpc.Server) error {
 
 // Start starts the embedded DNS server
 func (s *Server) Start() error {
-	if s.cfg.MetricsAddr != "" {
-		go s.startMetricsServer()
+	if err := s.update(context.Background()); err != nil {
+		return err
 	}
-	return s.startDNSServer()
+	return s.startListener()
+}
+
+func (s *Server) startListener() error {
+	// start listener for pub/sub
+	errCh := make(chan error, 1)
+	go func() {
+		c := s.pool.Get()
+		defer c.Close()
+
+		psc := redis.PubSubConn{Conn: c}
+		psc.Subscribe(publishKey)
+		for {
+			switch v := psc.Receive().(type) {
+			case redis.Message:
+				// TODO: update
+				if err := s.update(context.Background()); err != nil {
+					logrus.Error(err)
+					continue
+				}
+			case redis.Subscription:
+			default:
+				logrus.Debugf("unknown message type %T", v)
+			}
+		}
+	}()
+
+	err := <-errCh
+	return err
 }
 
 // Stop is used to stop and release resources
 func (s *Server) Stop() error {
-	s.emitter.Off("*")
+	if s.pool != nil {
+		s.pool.Close()
+	}
 	return nil
 }
 
@@ -114,4 +140,14 @@ func (s *Server) GenerateProfile() (string, error) {
 	}
 	tmpfile.Close()
 	return tmpfile.Name(), nil
+}
+
+func (s *Server) do(ctx context.Context, cmd string, args ...interface{}) (interface{}, error) {
+	conn, err := s.pool.GetContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+	r, err := conn.Do(cmd, args...)
+	return r, err
 }

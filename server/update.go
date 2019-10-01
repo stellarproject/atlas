@@ -24,41 +24,73 @@ package server
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"strings"
+	"text/template"
 
-	"github.com/gogo/protobuf/proto"
-	"github.com/gomodule/redigo/redis"
-	api "github.com/stellarproject/atlas/api/v1"
+	"github.com/sirupsen/logrus"
 	v1 "github.com/stellarproject/atlas/api/v1"
 )
 
-// List returns all records in the Atlas datastore
-func (s *Server) List(ctx context.Context, req *api.ListRequest) (*api.ListResponse, error) {
-	records, err := s.getRecords(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return &api.ListResponse{
-		Records: records,
-	}, nil
+const (
+	confTemplate = `# managed by atlas
+port={{ .Port }}
+server={{ .Upstream }}
+log-queries
+local=/localnet/
+{{ range .Records }}
+{{ getType .Type }}=/{{ .Name }}/{{ .Value }}{{ end }}
+`
+)
+
+type config struct {
+	Port     int
+	Upstream string
+	Records  []*v1.Record
 }
 
-func (s *Server) getRecords(ctx context.Context) ([]*v1.Record, error) {
-	var records []*v1.Record
-	keys, err := redis.Strings(s.do(ctx, "KEYS", fmt.Sprintf(recordKey, "*", "*")))
-	if err != nil {
-		return nil, err
+func getType(t v1.RecordType) string {
+	switch strings.ToLower(t.String()) {
+	case "a":
+		return "address"
 	}
-	for _, key := range keys {
-		data, err := redis.Bytes(s.do(ctx, "GET", key))
-		if err != nil {
-			return nil, err
-		}
-		var r v1.Record
-		if err := proto.Unmarshal(data, &r); err != nil {
-			return nil, err
-		}
-		records = append(records, &r)
+	return fmt.Sprintf("# unknown type %s", t.String())
+}
+
+func (s *Server) update(ctx context.Context) error {
+	logrus.Infof("updating config %s", s.cfg.ConfigPath)
+	t, err := template.New("config").Funcs(template.FuncMap{
+		"getType": getType,
+	}).Parse(confTemplate)
+	if err != nil {
+		return err
 	}
 
-	return records, nil
+	records, err := s.getRecords(ctx)
+	if err != nil {
+		return err
+	}
+
+	tmpFile, err := ioutil.TempFile("", "atlas-conf-")
+	if err != nil {
+		return err
+	}
+	defer os.Remove(tmpFile.Name())
+
+	cfg := &config{
+		Port:     s.cfg.Port,
+		Upstream: s.cfg.UpstreamDNSAddr,
+		Records:  records,
+	}
+	if err := t.Execute(tmpFile, cfg); err != nil {
+		return err
+	}
+	tmpFile.Close()
+
+	if err := os.Rename(tmpFile.Name(), s.cfg.ConfigPath); err != nil {
+		return err
+	}
+
+	return nil
 }

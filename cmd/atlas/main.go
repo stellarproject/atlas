@@ -42,16 +42,16 @@ func main() {
 			Usage: "enable debug logging",
 		},
 		cli.StringFlag{
-			Name:   "bind, b",
-			Usage:  "bind address for the DNS service",
-			Value:  "udp://0.0.0.0:53",
-			EnvVar: "ATLAS_BIND_ADDR",
+			Name:   "port, p",
+			Usage:  "port for the DNS service",
+			Value:  "53",
+			EnvVar: "ATLAS_PORT",
 		},
 		cli.StringFlag{
-			Name:   "datastore, d",
+			Name:   "redis-url, r",
 			Usage:  "uri for datastore backend",
-			Value:  "localdb:///etc/atlas/atlas.db",
-			EnvVar: "ATLAS_DATASTORE",
+			Value:  "redis://127.0.0.1:6379/0",
+			EnvVar: "ATLAS_REDIS_URL",
 		},
 		cli.StringFlag{
 			Name:   "address, a",
@@ -62,18 +62,14 @@ func main() {
 		cli.StringFlag{
 			Name:   "upstream-dns",
 			Usage:  "upstream dns server",
-			Value:  "9.9.9.9:53",
+			Value:  "9.9.9.9",
 			EnvVar: "ATLAS_UPSTREAM_DNS",
 		},
 		cli.StringFlag{
-			Name:   "metrics-addr, m",
-			Usage:  "address on which to expose metrics (default: disabled)",
-			EnvVar: "ATLAS_METRICS_ADDR",
-		},
-		cli.DurationFlag{
-			Name:   "cache-ttl",
-			Usage:  "builtin cache ttl (default: disabled)",
-			EnvVar: "ATLAS_CACHE_TTL",
+			Name:   "dnsmasq-conf, c",
+			Usage:  "path for generated dnsmasq config",
+			Value:  "/etc/dnsmasq.conf",
+			EnvVar: "ATLAS_DNSMASQ_CONF",
 		},
 	}
 	app.Before = func(c *cli.Context) error {

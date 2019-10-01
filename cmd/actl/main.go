@@ -76,7 +76,6 @@ func main() {
 		listRecordsCommand,
 		createRecordCommand,
 		deleteRecordCommand,
-		exportCommand,
 	}
 
 	if err := app.Run(os.Args); err != nil {
